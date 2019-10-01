@@ -1,5 +1,7 @@
-.ipynb
-.csv
-.bin
+*.ipynb
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.csv
+*.bin
 .idea/
 bin/*
