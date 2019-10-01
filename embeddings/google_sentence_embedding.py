@@ -10,7 +10,18 @@ OUTPUT_FORMAT = {
     'n_cols': 512
 }
 
+MODULE = "https://tfhub.dev/google/universal-sentence-encoder-large/3"
+
 # Core functions
+
+
+def embed_useT(module):
+    with tf.Graph().as_default():
+        sentences = tf.placeholder(tf.string)
+        embed = hub.Module(module)
+        embeddings = embed(sentences)
+        session = tf.train.MonitoredSession()
+    return lambda x: session.run(embeddings, {sentences: x})
 
 
 def embed_text(abstracts, output_format=None):
@@ -23,24 +34,11 @@ def embed_text(abstracts, output_format=None):
     if output_format is None:
         output_format = OUTPUT_FORMAT
 
-    # Import the Universal Sentence Encoder's TF Hub module
-    module_url = "https://tfhub.dev/google/universal-sentence-encoder/2"
-    embed = hub.Module(module_url)
+    sentences = list(abstracts.values)
 
-    # Reduce logging output.
-    tf.logging.set_verbosity(tf.logging.ERROR)
+    embed_fn = embed_useT(MODULE)
 
-    embedding = []
-
-    with tf.Session() as session:
-        session.run([tf.global_variables_initializer(), tf.tables_initializer()])
-        for sentence in abstracts.values:
-            sentence = sentence.replace("!", ".").replace("?", ".").replace("...", ".").split(".")
-            try:
-                vector = session.run(embed(sentence))
-                embedding = embedding.append(vector[0])
-            except:
-                embedding = embedding.append(np.zeros([output_format['n_cols']]))
+    embedding = embed_fn(sentences)
 
     return embedding, output_format
 
