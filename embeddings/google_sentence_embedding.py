@@ -13,21 +13,15 @@ OUTPUT_FORMAT = {
 # Core functions
 
 
-def embed_text(data, output_format=None, columns=None):
+def embed_text(abstracts, output_format=None):
     """
-    :param data: pandas df
-    :param output_format: dict
-    :param columns: one column (sentences)
-    :return: list of embeddings and dict output format 
+    :param abstracts: pandas Series of abstracts
+    :param output_format: dict specifying output format of the embedding method
+    :return: embedding and associated format
     """
 
     if output_format is None:
         output_format = OUTPUT_FORMAT
-
-    features = data.copy()
-
-    if columns is not None:
-        features = features[[columns]]
 
     # Import the Universal Sentence Encoder's TF Hub module
     module_url = "https://tfhub.dev/google/universal-sentence-encoder/2"
@@ -40,7 +34,7 @@ def embed_text(data, output_format=None, columns=None):
 
     with tf.Session() as session:
         session.run([tf.global_variables_initializer(), tf.tables_initializer()])
-        for sentence in features.values:
+        for sentence in abstracts.values:
             sentence = sentence.replace("!", ".").replace("?", ".").replace("...", ".").split(".")
             try:
                 vector = session.run(embed(sentence))
