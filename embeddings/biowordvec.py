@@ -7,10 +7,10 @@ from gensim.models.keyedvectors import KeyedVectors
 # Constants
 
 OUTPUT_FORMAT = {
-    'n_cols': 512
+    'n_cols': 200
 }
 
-TRAINED_MODEL = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'bin/bio_embedding_extrinsic')
+TRAINED_MODEL = '../bin/bio_embedding_extrinsic'
 
 
 # Core functions
