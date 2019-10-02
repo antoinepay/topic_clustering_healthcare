@@ -59,7 +59,8 @@ def detokenize(df_tokens,name_token_column):
     """
     :param df_tokens: dataframe with a tokenized column that will be detokenized
     :param name_token_column: string with the name of the column holding the tokenized data
-    :return: the same dataframe with an additional detkoenized column called "detokenized"
+    :return: the same dataframe with an additional detokenized column called "detokenized"
+    the detokenization turns [early, phase, trials, institut, oncology] into early phase therapeutic trials oncology
     """
     df_tokens["detokenized"] = df_tokens[name_token_column].apply(TreebankWordDetokenizer().detokenize)
     return df_tokens
