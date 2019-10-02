@@ -2,3 +2,4 @@ pandas
 gensim
 numpy
 tensorflow
+sklearn
