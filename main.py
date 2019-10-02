@@ -14,6 +14,8 @@ from embeddings import preprocessing
 from collections import Counter
 
 import matplotlib.pyplot as plt
+import itertools
+
 
 
 # Constants
@@ -105,12 +107,11 @@ def plot_kmeans(clusters):
 
 
 def label_clusters(clusters, n_clusters):
-    clusters["Tilte"] = abstracts.dropna(subset=["text", "Tiltle"]).Tilte
-    clusters["title_tokens"] = clusters["Tilte"].apply(preprocessing)
+    clusters["Tiltle"] = abstracts.dropna(subset=["text", "Tiltle"]).Tiltle
+    clusters["title_tokens"] = clusters["Tiltle"].apply(preprocessing.preprocessing)
     for k in range(n_clusters):
-        cluster = clusters.iloc[clusters.cluster == k, :]
-        titles = " ".join(list(cluster.title_tokens.values))
-        words = titles.split(" ")
+        cluster = clusters.loc[clusters.cluster == k, :]
+        words = [y for x in itertools.chain(cluster.title_tokens) for y in x]
         most_common_words = Counter(words).most_common(5)
         print(k)
         print(list(most_common_words))
@@ -120,3 +121,4 @@ plot_inertia(vectors)
 clusters = make_kmeans(vectors, 20)
 plot_kmeans(clusters)
 label_clusters(clusters, 20)
+

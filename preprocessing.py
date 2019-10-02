@@ -66,6 +66,11 @@ def detokenize(df_tokens,name_token_column):
     return df_tokens
 
 
+#testing_main (needs to be called in the actual main):
+#nltk_package_downloads()
+#df = read_data_df("data/CS2_Article_Clustering.xlsx")
+#df = delete_empty_rows(df)
+#df["tokens"] = df["text"].apply(preprocessing)
 
 #df = full_preprocessing()
 #print(df.head())
