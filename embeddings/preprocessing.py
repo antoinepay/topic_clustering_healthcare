@@ -60,5 +60,5 @@ def preprocessing(column):
 #nltk_package_downloads()
 df = read_data_df("../data/CS2_Article_Clustering.xlsx")
 df = delete_empty_rows(df)
-preprocessed = preprocessing(df.text)
-print(preprocessed)
+df["tokens"] = df["text"].apply(preprocessing)
+
