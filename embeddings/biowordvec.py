@@ -10,7 +10,7 @@ OUTPUT_FORMAT = {
     'n_cols': 200
 }
 
-TRAINED_MODEL = '../bin/bio_embedding_extrinsic'
+TRAINED_MODEL = 'bin/bio_embedding_extrinsic'
 
 
 # Core functions

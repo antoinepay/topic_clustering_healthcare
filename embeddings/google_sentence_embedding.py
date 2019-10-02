@@ -18,6 +18,10 @@ MODULE = "https://tfhub.dev/google/universal-sentence-encoder-large/3"
 
 
 def embed_useT(module):
+    """
+    :param module: url of the module
+    :return: session
+    """
     with tf.Graph().as_default():
         sentences = tf.placeholder(tf.string)
         embed = hub.Module(module)
