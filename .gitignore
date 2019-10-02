@@ -8,3 +8,4 @@ bin/*
 *.pyc
 *.gz
 data/GoogleNews-vectors-negative300.bin.gz
+.DS_Store
