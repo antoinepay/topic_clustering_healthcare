@@ -1,8 +1,10 @@
 # Libraries
-import tensorflow as tf
-import tensorflow_hub as hub
+import pandas as pd
 import numpy as np
-import re
+
+import tensorflow_hub as hub
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 # Constants
 
@@ -34,11 +36,11 @@ def embed_text(abstracts, output_format=None):
     if output_format is None:
         output_format = OUTPUT_FORMAT
 
-    sentences = list(abstracts.values)
+    sentences = list(abstracts)
 
     embed_fn = embed_useT(MODULE)
 
     embedding = embed_fn(sentences)
 
-    return embedding, output_format
+    return embedding[0], output_format
 
