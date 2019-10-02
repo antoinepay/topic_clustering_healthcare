@@ -6,7 +6,11 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
 
 
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx')
+abstracts = pd.read_excel('data/abstracts_pubmed.xlsx')
+abstracts.shape
+abstracts.columns
+abstracts.head()
+
 
 # all columns lower case:
 abstracts1 = abstracts.copy()

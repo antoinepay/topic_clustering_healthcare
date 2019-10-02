@@ -69,4 +69,4 @@ def detokenize(df_tokens,name_token_column):
 
 #df = full_preprocessing()
 #print(df.head())
-# df.to_excel("../data/abstracts_pubmed.xlsx")
+# df.to_excel("../data/abstracts_pubmed.xlsx",index=False)
