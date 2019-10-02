@@ -42,5 +42,7 @@ def embed_text(abstracts, output_format=None):
 
     embedding = embed_fn(sentences)
 
-    return embedding[0], output_format
+    return embedding, output_format
+
+
 

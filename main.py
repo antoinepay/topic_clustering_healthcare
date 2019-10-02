@@ -47,7 +47,7 @@ def make_kmeans(embedding_type, n_clusters):
     else:
         raise Exception("embedding_type should be either biowordvec or guse")
 
-    vectors = pd.DataFrame(vectors.apply(pd.Series))
+    vectors = pd.DataFrame(vectors)
 
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state).fit(vectors)
 
