@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 
 from embeddings import biowordvec
 from embeddings import google_sentence_embedding
-from embeddings import preprocessing
+import preprocessing
 
 from collections import Counter
 
