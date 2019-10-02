@@ -9,6 +9,9 @@ from sklearn.preprocessing import StandardScaler
 
 from embeddings import biowordvec
 from embeddings import google_sentence_embedding
+from embeddings import preprocessing
+
+from collections import Counter
 
 import matplotlib.pyplot as plt
 
@@ -51,7 +54,7 @@ def plot_inertia(vectors):
 
     for k in range(10, 50):
         kmeans = KMeans(n_clusters=k, random_state=random_state).fit(vectors)
-        inertia = inertia.append(kmeans.inertia_)
+        inertia.append(kmeans.inertia_)
 
     plt.plot(range(10, 50), inertia)
     plt.show()
@@ -101,6 +104,19 @@ def plot_kmeans(clusters):
     plt.show()
 
 
+def label_clusters(clusters, n_clusters):
+    clusters["Tilte"] = abstracts.dropna(subset=["text", "Tiltle"]).Tilte
+    clusters["title_tokens"] = clusters["Tilte"].apply(preprocessing)
+    for k in range(n_clusters):
+        cluster = clusters.iloc[clusters.cluster == k, :]
+        titles = " ".join(list(cluster.title_tokens.values))
+        words = titles.split(" ")
+        most_common_words = Counter(words).most_common(5)
+        print(k)
+        print(list(most_common_words))
+
+
 plot_inertia(vectors)
 clusters = make_kmeans(vectors, 20)
 plot_kmeans(clusters)
+label_clusters(clusters, 20)
