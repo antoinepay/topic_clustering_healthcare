@@ -70,3 +70,7 @@ df["text_clean"] = df["text"].apply(preprocessing)
 print("now doing title_clean")
 df["title_clean"] = df["title"].apply(preprocessing)
 # print("--- %s seconds ---" % (time.time() - start_time))
+
+
+# writing to excel in the data folder:
+df.to_excel("../data/abstracts_pubmed.xlsx")
