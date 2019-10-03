@@ -110,8 +110,8 @@ def load_data(abstracts_path, with_preprocess=True):
     abstracts = pd.read_excel(abstracts_path)
 
     if with_preprocess:
-        from .preprocessing import full_preprocessing
+        from .preprocessing import launch_preprocessing
 
-        abstracts = full_preprocessing(abstracts)
+        abstracts = launch_preprocessing(abstracts)
 
     return abstracts
