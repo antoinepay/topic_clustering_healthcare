@@ -126,6 +126,4 @@ clusters = make_kmeans(elmo_embedding, 20)
 plot_kmeans(clusters)
 label_clusters(clusters, 20)
 
-stopwords = require('stopwords-en')
-
 

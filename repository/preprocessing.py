@@ -17,7 +17,7 @@ def nltk_package_downloads():
 # word preprocessing
 def launch_preprocessing_words(df):
     """
-    :return: a preproceessed data frame
+    :return: a preprocessed data frame
     """
     df = df.rename(columns={"Tiltle": "title"})
     df = df.dropna(subset=['text', 'title'])
@@ -66,6 +66,7 @@ def preprocessing(column, prep_type):
                           "-", "_", "’", "'", "\"", ":", "=", "+", "&",
                           "`", "*", "0", "1", "2", "3", "4", "5",
                           "6", "7", "8", "9", "'", '.', '‘', ';']
+
     transformation_sc_dict = {initial: " " for initial in special_characters}
     tokens = [token.translate(str.maketrans(transformation_sc_dict)) for token in tokens]
     return tokens
@@ -76,13 +77,9 @@ def stopword_list(prep_type):
     normal_stopwords = stopwords.words('english')
 
     #     import more extensive stopwords + convert to list the first column
-    """
-    NOT WORKING YET - needs to be stored
 
-    comprehensive_stopwords = \
-    pd.read_csv('https://raw.githubusercontent.com/Alir3z4/stop-words/master/english.txt', header=None)[0].tolist()
+    extensive_stopwords = pd.read_csv('/stopwords/stopwords-en.txt', header=None)[0].tolist()
 
-    """
     #     potential further stopwords (will have to test that)
     special_medical = ["complex", "patients", "treatment", "months",
                        "rate", "prevalence", "case", "early", "management",
@@ -93,7 +90,7 @@ def stopword_list(prep_type):
         stopW = normal_stopwords
         # for the title, we also want to remove individual special words
     else:
-        stopW = normal_stopwords + special_medical
+        stopW = normal_stopwords + special_medical + extensive_stopwords
 
     return stopW
 
@@ -107,4 +104,3 @@ def detokenize(df_tokens, name_token_column):
     """
     df_tokens["detokenized"] = df_tokens[name_token_column].apply(TreebankWordDetokenizer().detokenize)
     return df_tokens
-
