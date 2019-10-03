@@ -1,4 +1,5 @@
 # Libraries
+import os
 
 import pandas as pd
 import numpy as np
@@ -96,4 +97,21 @@ def collect_data(categories):
                                               'category': cat, 'structured': s,
                                               'Keywords': keywords, 'Title': title},
                                              ignore_index=True)  # store the abstract
+    return abstracts
+
+
+def load_data(abstracts_path, with_preprocess=True):
+    """
+
+    :param abstracts_path: Path to preprocessed or not abstracts dataset
+    :param with_preprocess: Boolean to specify if we should apply preprocess pipeline
+    :return: abstracts dataset preprocessed
+    """
+    abstracts = pd.read_excel(abstracts_path)
+
+    if with_preprocess:
+        from .preprocessing import full_preprocessing
+
+        abstracts = full_preprocessing(abstracts)
+
     return abstracts

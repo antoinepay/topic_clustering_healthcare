@@ -1,45 +1,25 @@
 # Libraries
 
-import os
 import pandas as pd
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-from embeddings import biowordvec
-from embeddings import google_sentence_embedding
-from embeddings import preprocessing
-
 from collections import Counter
 
 import matplotlib.pyplot as plt
+import itertools
 
+from embeddings import biowordvec, elmo, google_sentence, word2vec
+from repository.abstracts import load_data
+from repository.preprocessing import preprocessing
 
 # Constants
 
 random_state = 42
 
 abstracts_path = 'data/CS2_Article_Clustering.xlsx'
-
-if not os.path.exists(abstracts_path):
-
-    from repository.abstracts import collect_data
-
-    # here are defined categories for which we want articles
-    categories = ['cancérologie', 'cardiologie', 'gastro',
-                  'diabétologie', 'nutrition', 'infectiologie',
-                  'gyneco-repro-urologie', 'pneumologie', 'dermatologie',
-                  'industrie de santé', 'ophtalmologie']
-
-    # call the function collect_data to get the abstracts
-    collect_data(categories).to_csv(abstracts_path)
-
-abstracts = pd.read_excel(abstracts_path)
-
-vectors = pd.DataFrame(biowordvec.embed_text(abstracts.dropna(
-    subset=["text", "Tiltle"]
-).text)[0])
 
 # Core functions
 
@@ -105,18 +85,44 @@ def plot_kmeans(clusters):
 
 
 def label_clusters(clusters, n_clusters):
-    clusters["Tilte"] = abstracts.dropna(subset=["text", "Tiltle"]).Tilte
-    clusters["title_tokens"] = clusters["Tilte"].apply(preprocessing)
+    clusters["Tiltle"] = abstracts.dropna(subset=["text", "Tiltle"]).Tiltle
+    clusters["title_tokens"] = clusters["Tiltle"].apply(preprocessing)
     for k in range(n_clusters):
-        cluster = clusters.iloc[clusters.cluster == k, :]
-        titles = " ".join(list(cluster.title_tokens.values))
-        words = titles.split(" ")
+        cluster = clusters.loc[clusters.cluster == k, :]
+        words = [y for x in itertools.chain(cluster.title_tokens) for y in x]
         most_common_words = Counter(words).most_common(5)
         print(k)
         print(list(most_common_words))
 
 
-plot_inertia(vectors)
-clusters = make_kmeans(vectors, 20)
+# main
+
+abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
+
+# word2vec
+
+word2vec_embedding, output_format = word2vec.embed_text(abstracts.text)
+
+
+# biowordvec
+
+biowordvec_embedding, output_format = biowordvec.embed_text(abstracts.text)
+
+
+# google sentence
+
+google_sentence_embedding, output_format = google_sentence.embed_text(abstracts.text)
+
+
+# elmo
+
+elmo_embedding, output_format = elmo.embed_text(abstracts.text)
+
+
+# Modeling
+
+plot_inertia(elmo_embedding)
+clusters = make_kmeans(elmo_embedding, 20)
 plot_kmeans(clusters)
 label_clusters(clusters, 20)
+
