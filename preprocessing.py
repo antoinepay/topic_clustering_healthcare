@@ -42,7 +42,19 @@ def preprocessing(column):
     tokens = [token for token in tokens if len(token) > 2]
 
     # stopwords + lowercase
-    stopW = stopwords.words('english')
+    normal_stopwords = stopwords.words('english')
+
+    #     import more extensive stopwords + convert to list the first column
+    comprehensive_stopwords = \
+    pd.read_csv('https://raw.githubusercontent.com/Alir3z4/stop-words/master/english.txt', header=None)[0].tolist()
+    #     potential further stopwords (will have to test that)
+    special_medical = ["complex", "patients", "treatment", "months",
+                       "rate", "prevalence", "case", "early", "management",
+                       "reported", "information", "baseline", "study", "questionnaire", "results", "month", "months",
+                       "years", "year"]
+
+    stopW = normal_stopwords + comprehensive_stopwords + special_medical
+
     tokens = [token.lower() for token in tokens if token.lower() not in stopW]
 
     # Deleting specific characters
