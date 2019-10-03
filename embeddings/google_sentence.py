@@ -44,7 +44,7 @@ def embed_text(abstracts, output_format=None):
 
     embed_fn = embed_useT(MODULE)
 
-    embedding = embed_fn(sentences)
+    embedding = pd.DataFrame(embed_fn(sentences))
 
     return embedding, output_format
 
