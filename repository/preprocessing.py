@@ -14,6 +14,7 @@ def nltk_package_downloads():
     nltk.download('punkt')
     nltk.download('stopwords')
 
+
 def stopword_list(prep_type):
     # stopwords + lowercase
     normal_stopwords = stopwords.words('english')
@@ -35,6 +36,7 @@ def stopword_list(prep_type):
         stopW = normal_stopwords + special_medical + comprehensive_stopwords
 
     return stopW
+
 
 # word preprocessing
 def preprocessing_sentence(column):
@@ -94,6 +96,7 @@ def detokenize(df_tokens, name_token_column):
     df_tokens["detokenized"] = df_tokens[name_token_column].apply(TreebankWordDetokenizer().detokenize)
     return df_tokens
 
+
 def launch_preprocessing(df):
     """
     :return: a preproceessed data frame
@@ -108,8 +111,10 @@ def launch_preprocessing(df):
     # modDfObj = dfObj.apply(multiplyData, args=[4])
 
     final = detokenize(df, "tokens")
+
     return final
 
 
 # comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
-# comprehensive_stopwords
+
+
