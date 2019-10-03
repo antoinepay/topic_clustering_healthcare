@@ -1,37 +1,36 @@
-#import packages
-import pandas as pd
+# Libraries
+
 import nltk
-from nltk import word_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-from nltk.stem.wordnet import WordNetLemmatizer
 
 
-#mandatory downloads
+# Mandatory downloads
+
 def nltk_package_downloads():
     nltk.download('punkt')
     nltk.download('stopwords')
 
 
-def full_preprocessing():
+def full_preprocessing(df):
     """
     :return: a preproceessed data frame
     """
-    df = pd.read_excel("../data/CS2_Article_Clustering.xlsx")
-    df = df.rename(columns = {"Tiltle": "title"})
-    df.dropna(subset=['text', 'title'],inplace=True)
+    df = df.rename(columns={"Tiltle": "title"})
+    df = df.dropna(subset=['text', 'title'])
 
     df["tokens"] = df["text"].apply(preprocessing)
     df["title_clean"] = df["title"].apply(preprocessing)
 
-    final = detokenize(df,"tokens")
+    final = detokenize(df, "tokens")
 
     return final
 
+
 def preprocessing(column):
     """
-    :param text_column:
+    :param column: column to preprocess
     :return: a pre-processed column
     """
 
@@ -77,13 +76,3 @@ def detokenize(df_tokens,name_token_column):
     df_tokens["detokenized"] = df_tokens[name_token_column].apply(TreebankWordDetokenizer().detokenize)
     return df_tokens
 
-
-#testing_main (needs to be called in the actual main):
-#nltk_package_downloads()
-#df = read_data_df("data/CS2_Article_Clustering.xlsx")
-#df = delete_empty_rows(df)
-#df["tokens"] = df["text"].apply(preprocessing)
-
-#df = full_preprocessing()
-#print(df.head())
-# df.to_excel("../data/abstracts_pubmed.xlsx",index=False)
