@@ -7,9 +7,12 @@ from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import pandas as pd
+import os
 from nltk import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
+
+
 
 
 # Mandatory downloads
@@ -21,6 +24,7 @@ def nltk_package_downloads():
     nltk.download('stopwords')
     nltk.download('wordnet')
 
+
 def stopword_list(prep_type):
     """
     :param prep_type: a string containing the type of preproceesing, i.e. "title" or "text"
@@ -30,7 +34,7 @@ def stopword_list(prep_type):
     normal_stopwords = stopwords.words('english')
 
     #     import more extensive stopwords + convert to list the first column
-    comprehensive_stopwords = pd.read_csv('/stopwords/stopwords-en.txt', header=None)[0].tolist()
+    comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
 
     #     potential further stopwords (will have to test that)
     special_medical = ["complex", "patients", "treatment", "months",
@@ -46,6 +50,7 @@ def stopword_list(prep_type):
         stopW = normal_stopwords + special_medical + comprehensive_stopwords
 
     return stopW
+
 
 # word preprocessing
 def preprocessing_sentence(column):
@@ -156,5 +161,11 @@ def launch_preprocessing(df):
     df["word_tokens_lemmatized"]=lemmatization(df["word_tokens"])
     df["title_clean_lemmatized"]=lemmatization(df["title_clean"])
 
-    final = detokenize(df, "tokens")
+    final = detokenize(df, "word_tokens")
+
     return final
+
+
+# comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
+
+
