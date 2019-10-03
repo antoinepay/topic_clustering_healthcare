@@ -113,3 +113,7 @@ def launch_preprocessing(df):
 
 # comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
 # comprehensive_stopwords
+
+
+
+launch_preprocessing(abstracts)
