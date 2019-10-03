@@ -110,7 +110,7 @@ def launch_preprocessing(df):
 
     # modDfObj = dfObj.apply(multiplyData, args=[4])
 
-    final = detokenize(df, "tokens")
+    final = detokenize(df, "word_tokens")
 
     return final
 
