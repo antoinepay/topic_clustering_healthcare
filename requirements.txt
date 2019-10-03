@@ -3,5 +3,5 @@ gensim
 numpy
 tensorflow
 sklearn
-re
 numpy
+bert-embedding
