@@ -134,7 +134,7 @@ concat_embeddings_with_abstracts_information(bert_embedding, abstracts, ['title'
 
 # Modeling
 
-plot_inertia(biowordvec_embedding)
+plot_inertia(bert_embedding)
 clusters = make_kmeans(biowordvec_embedding, 20)
 plot_kmeans(clusters)
 label_clusters(clusters, 20)
