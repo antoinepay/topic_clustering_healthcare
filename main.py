@@ -1,6 +1,7 @@
 # Libraries
 
 import pandas as pd
+import numpy as np
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
@@ -11,7 +12,7 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import itertools
 
-from embeddings import biowordvec, elmo, google_sentence, word2vec
+from embeddings import biowordvec, elmo, google_sentence, word2vec, bert
 from repository.abstracts import load_data
 from repository.preprocessing import preprocessing
 
@@ -95,37 +96,48 @@ def label_clusters(clusters, n_clusters):
         print(list(most_common_words))
 
 
+def concat_embeddings_with_abstracts_information(embedding, abstracts, columns):
+    return pd.concat([embedding, abstracts[columns]], axis=1)
+
+
 # main
 
-abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
+abstracts = pd.read_excel('data/abstracts_pubmed.xlsx')
+
 
 # word2vec
 
 word2vec_embedding, output_format = word2vec.embed_text(abstracts.text)
-
+concat_embeddings_with_abstracts_information(word2vec_embedding, abstracts, ['title', 'article_ID'])
 
 # biowordvec
 
 biowordvec_embedding, output_format = biowordvec.embed_text(abstracts.text)
-
+concat_embeddings_with_abstracts_information(biowordvec_embedding, abstracts, ['title', 'article_ID'])
 
 # google sentence
 
 google_sentence_embedding, output_format = google_sentence.embed_text(abstracts.text)
-
+concat_embeddings_with_abstracts_information(google_sentence_embedding, abstracts, ['title', 'article_ID'])
 
 # elmo
 
 elmo_embedding, output_format = elmo.embed_text(abstracts.text)
+concat_embeddings_with_abstracts_information(elmo_embedding, abstracts, ['title', 'article_ID'])
+
+# bert
+
+bert_embedding, output_format = bert.embed_text(abstracts.text)
+concat_embeddings_with_abstracts_information(bert_embedding, abstracts, ['title', 'article_ID'])
+
 
 
 # Modeling
 
-plot_inertia(elmo_embedding)
-clusters = make_kmeans(elmo_embedding, 20)
+plot_inertia(biowordvec_embedding)
+clusters = make_kmeans(biowordvec_embedding, 20)
 plot_kmeans(clusters)
 label_clusters(clusters, 20)
 
 stopwords = require('stopwords-en')
-
 

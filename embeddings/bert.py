@@ -1,37 +1,35 @@
+# Libraries
+
 import pandas as pd
-import xlrd
-import numpy as np
-from PIL import Image
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from bert_embedding import BertEmbedding
+
+# Constants
+
+OUTPUT_FORMAT = {
+    'n_cols': 200
+}
 
 
+# Core functions
 
-abstracts = pd.read_excel('data/abstracts_pubmed.xlsx')
-abstracts.shape
-abstracts.columns
-abstracts.head()
+def embed_text(abstracts, output_format=None):
+    """
+    :param abstracts: pandas Series of abstracts
+    :param output_format: dict specifying output format of the embedding method
+    :return: embedding and associated format
+    """
 
+    if output_format is None:
+        output_format = OUTPUT_FORMAT
 
-# all columns lower case:
-abstracts1 = abstracts.copy()
+    bert = BertEmbedding(model='bert_12_768_12', dataset_name='book_corpus_wiki_en_uncased')
+    bert_embedding = bert(abstracts.tolist(), oov_way='sum')
 
-abstracts1.columns
+    embedding = []
 
-abstracts['text'] = abstracts['text'].str.lower()
-abstracts['Tiltle'] = abstracts['Tiltle'].str.lower()
-abstracts['Keywords'] = abstracts['Keywords'].str.lower()
+    for _, vectors in bert_embedding:
+        embedding.append(sum(vectors))
 
+    embedding = pd.DataFrame(embedding)
 
-text = abstracts['text'][0]
-wordcloud = WordCloud().generate(text)
-
-
-plt.imshow(wordcloud, interpolation='bilinear')
-plt.axis("off")
-plt.show()
-
-
-
-
-%time
-1+1
+    return embedding, output_format
