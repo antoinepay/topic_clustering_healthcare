@@ -7,7 +7,7 @@ from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import pandas as pd
-
+import os
 
 # Mandatory downloads
 def nltk_package_downloads():
@@ -19,7 +19,7 @@ def stopword_list(prep_type):
     normal_stopwords = stopwords.words('english')
 
     #     import more extensive stopwords + convert to list the first column
-    comprehensive_stopwords = pd.read_csv('/stopwords/stopwords-en.txt', header=None)[0].tolist()
+    comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
 
     #     potential further stopwords (will have to test that)
     special_medical = ["complex", "patients", "treatment", "months",
@@ -109,3 +109,7 @@ def launch_preprocessing(df):
 
     final = detokenize(df, "tokens")
     return final
+
+
+# comprehensive_stopwords = pd.read_csv('stopwords/stopwords-en.txt', header=None)[0].tolist()
+# comprehensive_stopwords
