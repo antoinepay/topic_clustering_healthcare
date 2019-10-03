@@ -7,14 +7,25 @@ from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import pandas as pd
+from nltk import sent_tokenize, word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.tag import pos_tag
 
 
 # Mandatory downloads
 def nltk_package_downloads():
+    """
+    function that calls necessary downloads
+    """
     nltk.download('punkt')
     nltk.download('stopwords')
+    nltk.download('wordnet')
 
 def stopword_list(prep_type):
+    """
+    :param prep_type: a string containing the type of preproceesing, i.e. "title" or "text"
+    :return: a list with stopwords
+    """
     # stopwords + lowercase
     normal_stopwords = stopwords.words('english')
 
@@ -61,6 +72,7 @@ def preprocessing_sentence(column):
 def preprocessing_words(column, prep_type):
     """
     :param column: column to preprocess
+    :param prep_type: a string containing the type of preproceesing, i.e. "title" or "text"
     :return: a pre-processed column
     """
 
@@ -84,6 +96,39 @@ def preprocessing_words(column, prep_type):
     return tokens
 
 
+def lemmatization(tokenized_column):
+    """
+    :param tokenized_column: a column of a dataframe that is tokenized
+    :return: lemmatized list
+    """
+    # Lemmatization:
+    wnl = WordNetLemmatizer()
+
+    tags = [pos_tag(token) for token in tokenized_column]
+    # initialized lemmatizred list:
+    lemmatized = []
+
+    for list in tags:
+        # initialize empty intermediairy liust
+        result = []
+
+        for word, tag in list:
+
+            if tag.startswith("NN"):
+                result.append(wnl.lemmatize(word, pos='n'))
+            elif tag.startswith("VB"):
+                result.append(wnl.lemmatize(word, pos='v'))
+            elif tag.startswith("JJ"):
+                result.append(wnl.lemmatize(word, pos='a'))
+            elif tag.startswith("R"):
+                result.append(wnl.lemmatize(word, pos='r'))
+            else:
+                result.append(word)
+        lemmatized.append(result)
+
+    return lemmatized
+
+
 def detokenize(df_tokens, name_token_column):
     """
     :param df_tokens: dataframe with a tokenized column that will be detokenized
@@ -94,8 +139,10 @@ def detokenize(df_tokens, name_token_column):
     df_tokens["detokenized"] = df_tokens[name_token_column].apply(TreebankWordDetokenizer().detokenize)
     return df_tokens
 
+
 def launch_preprocessing(df):
     """
+    :return: a dataframe containing a title and a text column with strings that will be preprocessed (standard NLP preprocessing)
     :return: a preproceessed data frame
     """
     df = df.rename(columns={"Tiltle": "title"})
@@ -105,7 +152,9 @@ def launch_preprocessing(df):
     df["sentence_tokens"] = df["text"].apply(preprocessing_sentence)
     df["title_clean"] = df["title"].apply(preprocessing_words, args=["title"])
 
-    # modDfObj = dfObj.apply(multiplyData, args=[4])
+    #lemmatize:
+    df["word_tokens_lemmatized"]=lemmatization(df["word_tokens"])
+    df["title_clean_lemmatized"]=lemmatization(df["title_clean"])
 
     final = detokenize(df, "tokens")
     return final
