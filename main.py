@@ -1,11 +1,10 @@
 # Libraries
 
 import pandas as pd
-from sklearn.cluster import DBSCAN
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from repository.preprocessing import launch_preprocessing
-from modeling import KMeansModel
+from modeling import KMeansModel, DBSCANModel
 
 # Constants
 
@@ -38,30 +37,14 @@ def embed_abstract(abstracts, embedding_type):
     return vectors, output_format
 
 
-
-def make_dbscan(vectors, eps, min_samples):
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric="cosine").fit(vectors)
-
-    clusters = pd.concat(
-        [
-            vectors,
-            pd.DataFrame(
-                [i for i in dbscan.fit_predict(vectors)],
-                columns=('cluster',))
-        ],
-        axis=1
-    )
-    return clusters
-
-
 abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
 vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
-#abstracts = pd.read_csv('data/abstracts_preproc.csv')
-#vectors = pd.read_csv('data/biowordvec_embedding.csv')
-
 # Modeling
+
+
+# KMeans
 
 model = KMeansModel()
 
@@ -79,3 +62,17 @@ labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts,
 rmse_kmeans = model.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
 
 model.nb_categories_in_clusters(labelled_clusters=labelled_clusters, n_clusters=n_clusters)
+
+
+# DBSCAN
+
+eps = 0.1
+min_samples = 5
+
+model = DBSCANModel(eps=eps, min_samples=min_samples, metric="cosine")
+
+clusters = model.perform_clustering(features=vectors)
+model.plot_from_pca(clusters=clusters)
+
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+

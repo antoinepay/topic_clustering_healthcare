@@ -10,8 +10,6 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from scipy.spatial.distance import cosine
 
-from embeddings import BioWordVec
-
 
 class ClusteringModel:
 
@@ -24,8 +22,8 @@ class ClusteringModel:
         self.model.set_params(**params)
         return self
 
-    def perform_clustering(self, features):
-        self.model.fit(features)
+    def perform_clustering(self, features, **params):
+        self.model.fit(features, **params)
 
         return pd.concat(
             [
@@ -47,8 +45,7 @@ class ClusteringModel:
 
         clusters["nouns_lemmatized_title"] = abstracts.nouns_lemmatized_title.values
         clusters["nouns_lemmatized_text"] = abstracts.nouns_lemmatized_text.values
-
-        labelled_clusters = []
+        clusters["category"] = abstracts.category
 
         for k in range(n_clusters):
             cluster = clusters.loc[clusters.cluster == k, :]
@@ -57,10 +54,9 @@ class ClusteringModel:
             print(k)
             print(most_common_words)
             most_common_words = [word[0] for word in most_common_words]
-            cluster["labels"] = pd.Series([most_common_words] * len(cluster)).values
-            labelled_clusters.append(cluster)
+            clusters.loc[clusters.cluster == k, 'labels'] = pd.Series([most_common_words] * len(cluster)).values
 
-        return pd.concat(labelled_clusters, axis=0)
+        return clusters
 
     def evaluate_clusters(self, embedder, labelled_clusters):
 
@@ -73,7 +69,6 @@ class ClusteringModel:
             similarity_vector.append(cosine(embedded_category[i], embedded_labels[i]))
 
         return np.sqrt(sum([a ** 2 for a in similarity_vector]) / len(similarity_vector))
-
 
     def plot_elbow(self, features, params):
         inertia = []

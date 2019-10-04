@@ -6,22 +6,7 @@ from gensim.models.keyedvectors import KeyedVectors
 from embeddings.embedder import Embedder
 
 # to download the self trained model: https://stackoverflow.com/questions/46433778/import-googlenews-vectors-negative300-bin
-from gensim import models
 
-w = models.KeyedVectors.load_word2vec_format(
-    '../GoogleNews-vectors-negative300.bin', binary=True)
-
-model = models.Word2Vec.load_word2vec_format('./model/GoogleNews-vectors-negative300.bin', binary=True)
-
-from gensim.models import KeyedVectors
-model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
-
-import gensim
-# Path to google news vectors
-google_news_path = "path\to\google\news\\GoogleNews-vectors-negative300.bin.gz"
-
-# Load google news vecs in gensim
-model = gensim.models.KeyedVectors.load_word2vec_format(google_news_path, binary=True)
 
 class Word2Vec(Embedder):
 
