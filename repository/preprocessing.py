@@ -44,7 +44,7 @@ def stopword_list(prep_type):
                         "among", "clinical", "associated"]
 
     if prep_type == "text":
-        stopW = normal_stopwords
+        stopW = normal_stopwords + comprehensive_stopwords
         # for the title, we also want to remove individual special words
     else:
         stopW = normal_stopwords + special_medical + comprehensive_stopwords
