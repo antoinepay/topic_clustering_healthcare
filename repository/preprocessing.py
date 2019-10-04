@@ -195,11 +195,16 @@ def load_data(abstracts_path, with_preprocess=True):
 
 
 
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False).head()
 abstracts = launch_preprocessing(abstracts)
 
 abstracts.word_tokens_lemmatized[0]
+
+# p is not removed:
 abstracts.nouns_lemmatized_text[0]
+
+# p
+abstracts.nouns_lemmatized_text[55]
 
 
 
