@@ -71,6 +71,11 @@ def make_kmeans(vectors, n_clusters):
     return clusters
 
 
+def make_DBscan(vectors, n_clusters):
+
+
+
+
 def plot_kmeans(clusters):
     """
     :param clusters: df with embedded text and associated cluster
@@ -105,7 +110,7 @@ def label_clusters(clusters, n_clusters, abstracts):
     :return labelled clusters
     """
 
-    clusters["title_clean_lemmatized"] = abstracts.nouns_lemmatized_title.values
+    clusters["nouns_lemmatized_title"] = abstracts.nouns_lemmatized_title.values
     clusters["nouns_lemmatized_text"] = abstracts.nouns_lemmatized_text.values
 
     labelled_clusters = []
@@ -125,8 +130,8 @@ def label_clusters(clusters, n_clusters, abstracts):
 
 def evaluate_clusters(labelled_clusters):
 
-    embedded_category = np.array(BioWordVec.embed_text(labelled_clusters.nouns_lemmatized_text)[0])
-    embedded_labels = np.array(BioWordVec.embed_text(labelled_clusters.labels)[0])
+    embedded_category = np.array(BioWordVec.embed_text(abstracts=labelled_clusters.nouns_lemmatized_text)[0])
+    embedded_labels = np.array(BioWordVec.embed_text(abstracts=labelled_clusters.labels)[0])
 
     similarity_vector = []
 
@@ -142,8 +147,9 @@ def nb_categories_in_clusters(labelled_clusters, n_clusters):
 
 # main
 
-abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
-vectors, output_format = embed_abstract(abstracts, "google_sentence")
+abstracts = pd.read_excel(abstracts_path)
+abstracts = launch_preprocessing(abstracts)
+vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
 # Modeling
 
@@ -156,10 +162,9 @@ params = [{'n_clusters': i} for i in range(10, 40, 2)]
 kmeans_model.plot_elbow(features=vectors, params=params)
 
 
-
-clusters = make_kmeans(vectors, 15)
+clusters = make_kmeans(vectors, 10)
 plot_kmeans(clusters)
-labelled_clusters = label_clusters(clusters, 15, abstracts)
+labelled_clusters = label_clusters(clusters, 10, abstracts)
 rmse = evaluate_clusters(labelled_clusters)
-nb_categories_in_clusters(labelled_clusters, 15)
+nb_categories_in_clusters(labelled_clusters, 10)
 

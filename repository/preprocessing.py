@@ -131,7 +131,7 @@ def lemmatization(tokenized_column):
                     result.append(wnl.lemmatize(word, pos='v'))
                 elif tag.startswith("JJ"):
                     result.append(wnl.lemmatize(word, pos='a'))
-                    ouns.append(wnl.lemmatize(word, pos='a'))
+                    nouns.append(wnl.lemmatize(word, pos='a'))
                 elif tag.startswith("R"):
                     result.append(wnl.lemmatize(word, pos='r'))
                 else:
@@ -166,8 +166,8 @@ def launch_preprocessing(df):
     df["title_clean"] = df["title"].apply(preprocessing_words, args=["title"])
 
     #lemmatize:
-    df["word_tokens_lemmatized"],df["nouns_lemmatized_text"]=lemmatization(df["word_tokens"])
-    df["title_clean_lemmatized"],df["nouns_lemmatized_title"]=lemmatization(df["title_clean"])
+    df["word_tokens_lemmatized"], df["nouns_lemmatized_text"] = lemmatization(df["word_tokens"])
+    df["title_clean_lemmatized"], df["nouns_lemmatized_title"] = lemmatization(df["title_clean"])
 
     final = detokenize(df, "word_tokens")
 
@@ -188,7 +188,6 @@ def load_data(abstracts_path, with_preprocess=True):
     abstracts = pd.read_excel(abstracts_path)
 
     if with_preprocess:
-        from .preprocessing import launch_preprocessing
 
         abstracts = launch_preprocessing(abstracts)
 
@@ -199,8 +198,7 @@ def load_data(abstracts_path, with_preprocess=True):
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
-abstracts.word_tokens_lemmatized[0]
-abstracts.nouns_lemmatized_text[0]
+
 
 
 
