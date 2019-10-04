@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import DBSCAN
+
 from scipy.spatial.distance import cosine
 
 from collections import Counter
@@ -71,6 +73,23 @@ def make_kmeans(vectors, n_clusters):
     return clusters
 
 
+
+def make_dbscan(vectors, eps, min_samples):
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric="cosine").fit(vectors)
+
+    clusters = pd.concat(
+        [
+            vectors,
+            pd.DataFrame(
+                [i for i in dbscan.fit_predict(vectors)],
+                columns=('cluster',))
+        ],
+        axis=1
+    )
+    return clusters
+
+
+
 def plot_kmeans(clusters):
     """
     :param clusters: df with embedded text and associated cluster
@@ -105,14 +124,14 @@ def label_clusters(clusters, n_clusters, abstracts):
     :return labelled clusters
     """
 
-    clusters["title_clean"] = abstracts.title_clean.values
-    clusters["category"] = abstracts.category.values
+    clusters["nouns_lemmatized_title"] = abstracts.nouns_lemmatized_title.values
+    clusters["nouns_lemmatized_text"] = abstracts.nouns_lemmatized_text.values
 
     labelled_clusters = []
 
     for k in range(n_clusters):
         cluster = clusters.loc[clusters.cluster == k, :]
-        words = [y for x in itertools.chain(cluster.title_clean) for y in x]
+        words = [y for x in itertools.chain(cluster.nouns_lemmatized_title) for y in x]
         most_common_words = Counter(words).most_common(5)
         print(k)
         print(most_common_words)
@@ -125,8 +144,8 @@ def label_clusters(clusters, n_clusters, abstracts):
 
 def evaluate_clusters(labelled_clusters):
 
-    embedded_category = np.array(BioWordVec().embed_text(labelled_clusters.category)[0])
-    embedded_labels = np.array(BioWordVec().embed_text(labelled_clusters.labels)[0])
+    embedded_category = np.array(BioWordVec.embed_text(abstracts=labelled_clusters.nouns_lemmatized_text)[0])
+    embedded_labels = np.array(BioWordVec.embed_text(abstracts=labelled_clusters.labels)[0])
 
     similarity_vector = []
 
@@ -142,8 +161,9 @@ def nb_categories_in_clusters(labelled_clusters, n_clusters):
 
 # main
 
-abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
-vectors, output_format = embed_abstract(abstracts, "google_sentence")
+abstracts = pd.read_excel(abstracts_path)
+abstracts = launch_preprocessing(abstracts)
+vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
 
 vectors, output_format = embed_abstract(abstracts, "word2vec")
@@ -161,12 +181,11 @@ params = [{'n_clusters': i} for i in range(10, 40, 2)]
 kmeans_model.plot_elbow(features=vectors, params=params)
 
 
-
-clusters = make_kmeans(vectors, 15)
+clusters = make_kmeans(vectors, 10)
 plot_kmeans(clusters)
-labelled_clusters = label_clusters(clusters, 15, abstracts)
+labelled_clusters = label_clusters(clusters, 10, abstracts)
 rmse = evaluate_clusters(labelled_clusters)
-nb_categories_in_clusters(labelled_clusters, 15)
+nb_categories_in_clusters(labelled_clusters, 10)
 
 
 

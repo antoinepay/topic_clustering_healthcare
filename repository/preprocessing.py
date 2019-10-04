@@ -167,8 +167,8 @@ def launch_preprocessing(df):
     df["title_clean"] = df["title"].apply(preprocessing_words, args=["title"])
 
     #lemmatize:
-    df["word_tokens_lemmatized"],df["nouns_lemmatized_text"]=lemmatization(df["word_tokens"])
-    df["title_clean_lemmatized"],df["nouns_lemmatized_title"]=lemmatization(df["title_clean"])
+    df["word_tokens_lemmatized"], df["nouns_lemmatized_text"] = lemmatization(df["word_tokens"])
+    df["title_clean_lemmatized"], df["nouns_lemmatized_title"] = lemmatization(df["title_clean"])
 
     final = detokenize(df, "word_tokens")
 
@@ -189,7 +189,6 @@ def load_data(abstracts_path, with_preprocess=True):
     abstracts = pd.read_excel(abstracts_path)
 
     if with_preprocess:
-        from .preprocessing import launch_preprocessing
 
         abstracts = launch_preprocessing(abstracts)
 
@@ -200,13 +199,4 @@ def load_data(abstracts_path, with_preprocess=True):
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
-
-abstracts.to_csv('data/abstracts_preproc.csv', index=False)
-
-abstracts.columns
-
-# nouns_lemmatized_text
-# nouns_lemmatized_title
-
-# do word count on this, prend les n premiers mots pour reduire le noise
-# ranking des adjectives et nouns qu on veut prendre pour faire la somme pour faire le vecteur qui va rentrer dans le clustering
+# abstracts.to_csv('data/abstracts_preproc.csv', index=False)

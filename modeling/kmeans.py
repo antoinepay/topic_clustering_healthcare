@@ -2,6 +2,9 @@
 
 from modeling.clustering_model import ClusteringModel
 from sklearn.cluster import KMeans
+import numpy as np
+from embeddings import BioWordVec
+from scipy.spatial.distance import cosine
 
 
 class KMeansModel(ClusteringModel):
@@ -10,3 +13,4 @@ class KMeansModel(ClusteringModel):
         super().__init__('kmeans')
 
         self.model = KMeans(n_clusters=n_clusters)
+
