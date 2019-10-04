@@ -13,9 +13,9 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
 
 
-
-
 # Mandatory downloads
+
+
 def nltk_package_downloads():
     """
     function that calls necessary downloads
@@ -94,14 +94,14 @@ def preprocessing_words(column, prep_type):
     special_characters = ["@", "/", "#", ".", ",", "!", "?", "(", ")",
                           "-", "_", "’", "'", "\"", ":", "=", "+", "&",
                           "`", "*", "0", "1", "2", "3", "4", "5",
-                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t']
+                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t', " "]
     transformation_sc_dict = {initial: " " for initial in special_characters}
     tokens = [token.translate(str.maketrans(transformation_sc_dict)) for token in tokens]
 
     # deleting stopwords
     stopW = stopword_list(prep_type)
 
-    tokens = [token.lower().strip() for token in tokens if token.lower() not in stopW]
+    tokens = [token.lower() for token in tokens if token.lower() not in stopW]
     return tokens
 
 
@@ -118,7 +118,7 @@ def lemmatization(tokenized_column):
     lemmatized = []
 
     for list in tags:
-        # initialize empty intermediairy liust
+        # initialize empty intermediary liust
         result = []
 
         for word, tag in list:
@@ -133,6 +133,30 @@ def lemmatization(tokenized_column):
                 result.append(wnl.lemmatize(word, pos='r'))
             else:
                 result.append(word)
+        lemmatized.append(result)
+
+    return lemmatized
+
+def lemmatization_noun(tokenized_column):
+    """
+    :param tokenized_column: a column of a dataframe that is tokenized
+    :return: lemmatized list
+    """
+    # Lemmatization:
+    wnl = WordNetLemmatizer()
+
+    tags = [pos_tag(token) for token in tokenized_column]
+    # initialized lemmatizred list:
+    lemmatized = []
+
+    for list in tags:
+        # initialize empty intermediary liust
+        result = []
+
+        for word, tag in list:
+
+            if tag.startswith("NN"):
+                result.append(wnl.lemmatize(word, pos='n'))
         lemmatized.append(result)
 
     return lemmatized
@@ -192,9 +216,12 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
-
-del abstracts
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
 
+
+#
+# abstracts.title_clean_lemmatized[4]
+#
+# '    '
