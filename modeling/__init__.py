@@ -1,3 +1,4 @@
-from .affinity_propragation import AffinityPropagationModel
-from .kmeans import KMeansModel
-from .dbscan import DBSCANModel
+from modeling.affinity_propragation import AffinityPropagationModel
+from modeling.kmeans import KMeansModel
+from modeling.dbscan import DBSCANModel
+from modeling.meanshift import MeanShiftModel

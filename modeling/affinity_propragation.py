@@ -6,9 +6,7 @@ from sklearn.cluster import AffinityPropagation
 
 class AffinityPropagationModel(ClusteringModel):
 
-    def __init__(self):
+    def __init__(self, **params):
         super().__init__('affinity')
-        self.model = AffinityPropagation()
+        self.model = AffinityPropagation(**params)
 
-    def evaluate_clustering(self, clusters):
-        pass

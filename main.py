@@ -4,7 +4,7 @@ import pandas as pd
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from repository.preprocessing import launch_preprocessing
-from modeling import KMeansModel, DBSCANModel
+from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
 
 # Constants
 
@@ -76,3 +76,22 @@ model.plot_from_pca(clusters=clusters)
 
 labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
 
+
+# Affinity Propagation
+
+model = AffinityPropagationModel()
+
+clusters = model.perform_clustering(features=vectors)
+model.plot_from_pca(clusters=clusters)
+
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+
+
+# MeanShift
+
+model = MeanShiftModel()
+
+clusters = model.perform_clustering(features=vectors)
+model.plot_from_pca(clusters=clusters)
+
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
