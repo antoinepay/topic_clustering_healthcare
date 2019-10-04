@@ -42,7 +42,8 @@ def stopword_list(prep_type):
                        "reported", "information", "baseline", "study", "questionnaire", "results", "month", "months",
                        "years", "year", "status", "type", "cells", "cell", "nan",
                         "among", "clinical", "associated", "hospital", "care", "age", "iii", " ", "  ",
-                       "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+                       "january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+                       "november", "december"]
 
     if prep_type == "text":
         stopW = normal_stopwords + comprehensive_stopwords + special_medical
@@ -78,27 +79,29 @@ def preprocessing_sentence(column):
 def preprocessing_words(column, prep_type):
     """
     :param column: column to preprocess
-    :param prep_type: a string containing the type of preproceesing, i.e. "title" or "text"
+    :param prep_type: a string containing the type of preprocessing, i.e. "title" or "text"
     :return: a pre-processed column
     """
 
     # Tokenization
     tokens = word_tokenize(str(column))
 
-    # Deleting words with  only one caracter
-    tokens = [token for token in tokens if len(token) > 2]
+    # Deleting words with  only one or 2 caracter
+    tokens = [token for token in tokens if len(token) > 3]
 
-    stopW = stopword_list(prep_type)
-
-    tokens = [token.lower() for token in tokens if token.lower() not in stopW]
 
     # Deleting specific characters
     special_characters = ["@", "/", "#", ".", ",", "!", "?", "(", ")",
                           "-", "_", "’", "'", "\"", ":", "=", "+", "&",
                           "`", "*", "0", "1", "2", "3", "4", "5",
-                          "6", "7", "8", "9", "'", '.', '‘', ';']
+                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t']
     transformation_sc_dict = {initial: " " for initial in special_characters}
     tokens = [token.translate(str.maketrans(transformation_sc_dict)) for token in tokens]
+
+    # deleting stopwords
+    stopW = stopword_list(prep_type)
+
+    tokens = [token.lower().strip() for token in tokens if token.lower() not in stopW]
     return tokens
 
 
@@ -189,9 +192,7 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
-# abstracts_path = 'data/CS2_Article_Clustering.xlsx'
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
+del abstracts
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
-
-abstracts.text
 
