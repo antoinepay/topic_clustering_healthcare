@@ -29,19 +29,19 @@ abstracts_path = 'data/CS2_Article_Clustering.xlsx'
 def embed_abstract(abstracts, embedding_type):
 
     if embedding_type == "word2vec":
-        vectors, output_format = Word2Vec().embed_text(abstracts.word_tokens)
+        vectors, output_format = Word2Vec().embed_text(abstracts.nouns_lemmatized_text)
 
     elif embedding_type == "biowordvec":
-        vectors, output_format = BioWordVec().embed_text(abstracts.word_tokens)
+        vectors, output_format = BioWordVec().embed_text(abstracts.nouns_lemmatized_text)
 
     elif embedding_type == "google_sentence":
         vectors, output_format = GoogleSentence().embed_text(abstracts.sentence_tokens)
 
     elif embedding_type == "elmo":
-        vectors, output_format = ELMo().embed_text(abstracts.word_tokens)
+        vectors, output_format = ELMo().embed_text(abstracts.nouns_lemmatized_text)
 
     elif embedding_type == "bert":
-        vectors, output_format = Bert().embed_text(abstracts.word_tokens)
+        vectors, output_format = Bert().embed_text(abstracts.nouns_lemmatized_text)
 
     else:
         raise Exception("Embedding type should be word2vec, biowordvec, google_sentence, elmo or bert")
@@ -145,6 +145,11 @@ def nb_categories_in_clusters(labelled_clusters, n_clusters):
 abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
 vectors, output_format = embed_abstract(abstracts, "google_sentence")
 
+
+vectors, output_format = embed_abstract(abstracts, "word2vec")
+
+
+
 # Modeling
 
 from modeling import KMeansModel
@@ -162,4 +167,6 @@ plot_kmeans(clusters)
 labelled_clusters = label_clusters(clusters, 15, abstracts)
 rmse = evaluate_clusters(labelled_clusters)
 nb_categories_in_clusters(labelled_clusters, 15)
+
+
 

@@ -123,7 +123,8 @@ def lemmatization(tokenized_column):
         result = []
         nouns = []
         for word, tag in list:
-            if word != '    ' and word != '     ' and word != ' ' and word != '  ':
+            if word != '    ' and word != '     ' and word != ' ' and word != '  ' and\
+                    word != 'p       ' and word!= 'p     ' and word != 'p    ' and word != 'p   ':
                 if tag.startswith("NN"):
                     result.append(wnl.lemmatize(word, pos='n'))
                     nouns.append(wnl.lemmatize(word, pos='n'))
@@ -131,7 +132,7 @@ def lemmatization(tokenized_column):
                     result.append(wnl.lemmatize(word, pos='v'))
                 elif tag.startswith("JJ"):
                     result.append(wnl.lemmatize(word, pos='a'))
-                    ouns.append(wnl.lemmatize(word, pos='a'))
+                    nouns.append(wnl.lemmatize(word, pos='a'))
                 elif tag.startswith("R"):
                     result.append(wnl.lemmatize(word, pos='r'))
                 else:
@@ -196,16 +197,16 @@ def load_data(abstracts_path, with_preprocess=True):
 
 
 
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False).head()
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
-abstracts.word_tokens_lemmatized[0]
 
-# p is not removed:
-abstracts.nouns_lemmatized_text[0]
+abstracts.to_csv('data/abstracts_preproc.csv', index=False)
 
-# p
-abstracts.nouns_lemmatized_text[55]
+abstracts.columns
 
+# nouns_lemmatized_text
+# nouns_lemmatized_title
 
-
+# do word count on this, prend les n premiers mots pour reduire le noise
+# ranking des adjectives et nouns qu on veut prendre pour faire la somme pour faire le vecteur qui va rentrer dans le clustering
