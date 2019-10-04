@@ -216,9 +216,19 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
+<<<<<<< HEAD
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
+=======
+
+# abstracts_path = 'data/CS2_Article_Clustering.xlsx'
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
+abstracts = launch_preprocessing(abstracts)
+
+
+
+>>>>>>> fix rmse
 
 
 #

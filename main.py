@@ -6,7 +6,6 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
 from scipy.spatial.distance import cosine
 
 from collections import Counter
@@ -118,7 +117,7 @@ def label_clusters(clusters, n_clusters, abstracts):
         print(k)
         print(most_common_words)
         most_common_words = [word[0] for word in most_common_words]
-        cluster["labels"] = [most_common_words] * len(cluster)
+        cluster["labels"] = pd.Series([most_common_words] * len(cluster)).values
         labelled_clusters.append(cluster)
 
     return pd.concat(labelled_clusters, axis=0)
@@ -126,8 +125,8 @@ def label_clusters(clusters, n_clusters, abstracts):
 
 def evaluate_clusters(labelled_clusters):
 
-    embedded_category = BioWordVec().embed_text(labelled_clusters.category)
-    embedded_labels = BioWordVec().embed_text(labelled_clusters.labels)
+    embedded_category = np.array(BioWordVec().embed_text(labelled_clusters.category)[0])
+    embedded_labels = np.array(BioWordVec().embed_text(labelled_clusters.labels)[0])
 
     similarity_vector = []
 
@@ -163,5 +162,4 @@ plot_kmeans(clusters)
 labelled_clusters = label_clusters(clusters, 15, abstracts)
 rmse = evaluate_clusters(labelled_clusters)
 nb_categories_in_clusters(labelled_clusters, 15)
-
 
