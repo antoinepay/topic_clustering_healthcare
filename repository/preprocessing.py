@@ -116,38 +116,6 @@ def lemmatization(tokenized_column):
     tags = [pos_tag(token) for token in tokenized_column]
     # initialized lemmatizred list:
     lemmatized = []
-
-    for list in tags:
-        # initialize empty intermediary liust
-        result = []
-
-        for word, tag in list:
-
-            if tag.startswith("NN"):
-                result.append(wnl.lemmatize(word, pos='n'))
-            elif tag.startswith("VB"):
-                result.append(wnl.lemmatize(word, pos='v'))
-            elif tag.startswith("JJ"):
-                result.append(wnl.lemmatize(word, pos='a'))
-            elif tag.startswith("R"):
-                result.append(wnl.lemmatize(word, pos='r'))
-            else:
-                result.append(word)
-        lemmatized.append(result)
-
-    return lemmatized
-
-def lemmatization(tokenized_column):
-    """
-    :param tokenized_column: a column of a dataframe that is tokenized
-    :return: lemmatized list
-    """
-    # Lemmatization:
-    wnl = WordNetLemmatizer()
-
-    tags = [pos_tag(token) for token in tokenized_column]
-    # initialized lemmatizred list:
-    lemmatized = []
     nouns_list = []
 
     for list in tags:
@@ -227,27 +195,5 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
-<<<<<<< HEAD
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
-abstracts = launch_preprocessing(abstracts)
-
-<<<<<<< HEAD
-# remove verbs from title
-# remove verbs from text
-=======
-=======
-
-# abstracts_path = 'data/CS2_Article_Clustering.xlsx'
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
-abstracts = launch_preprocessing(abstracts)
 
 
-
->>>>>>> fix rmse
-
->>>>>>> bbb7e348842dd4b389e01deb6a86a812a2ed2524
-
-#
-# abstracts.title_clean_lemmatized[4]
-#
-# '    '
