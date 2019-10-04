@@ -122,12 +122,8 @@ def label_clusters(clusters, n_clusters, abstracts):
     :return labelled clusters
     """
 
-    clusters["title_clean"] = abstracts.title_clean
-    clusters["category"] = abstracts.category
-
-    for i in clusters.index:
-        if type(clusters.loc[i, "title_clean"]) is float:
-            clusters.loc[i, "title_clean"] = ["nan"]
+    clusters["title_clean"] = abstracts.title_clean.values
+    clusters["category"] = abstracts.category.values
 
     labelled_clusters = []
 
@@ -146,10 +142,6 @@ def label_clusters(clusters, n_clusters, abstracts):
 
 def evaluate_clusters(labelled_clusters):
 
-    for i in labelled_clusters.index:
-        if type(clusters.loc[i, "category"]) is float:
-            clusters.loc[i, "category"] = ["nan"]
-
     embedded_category = BioWordVec().embed_text(labelled_clusters.category)
     embedded_labels = BioWordVec().embed_text(labelled_clusters.labels)
 
@@ -158,7 +150,7 @@ def evaluate_clusters(labelled_clusters):
     for i in range(len(embedded_labels)):
         similarity_vector.append(cosine(embedded_category[i], embedded_labels[i]))
 
-    return np.sqrt(sum([a**2 for a in similarity_vector]))
+    return np.sqrt(sum([a**2 for a in similarity_vector])/len(similarity_vector))
 
 
 def nb_categories_in_clusters(labelled_clusters, n_clusters):
@@ -176,6 +168,7 @@ plot_inertia(vectors)
 clusters = make_kmeans(vectors, 15)
 plot_kmeans(clusters)
 labelled_clusters = label_clusters(clusters, 15, abstracts)
-evaluate_clusters(labelled_clusters)
+rmse = evaluate_clusters(labelled_clusters)
 nb_categories_in_clusters(labelled_clusters, 15)
+
 
