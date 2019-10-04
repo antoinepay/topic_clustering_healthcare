@@ -147,13 +147,13 @@ vectors, output_format = embed_abstract(abstracts, "google_sentence")
 
 # Modeling
 
-#from modeling import KMeansModel
+from modeling import KMeansModel
 
-#kmeans_model = KMeansModel()
+kmeans_model = KMeansModel()
 
-#params = [{'n_clusters': i} for i in range(10, 40, 2)]
+params = [{'n_clusters': i} for i in range(10, 40, 2)]
 
-#kmeans_model.plot_elbow(features=vectors, params=params)
+kmeans_model.plot_elbow(features=vectors, params=params)
 
 
 
