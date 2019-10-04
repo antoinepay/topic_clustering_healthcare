@@ -131,6 +131,7 @@ def lemmatization(tokenized_column):
                     result.append(wnl.lemmatize(word, pos='v'))
                 elif tag.startswith("JJ"):
                     result.append(wnl.lemmatize(word, pos='a'))
+                    ouns.append(wnl.lemmatize(word, pos='a'))
                 elif tag.startswith("R"):
                     result.append(wnl.lemmatize(word, pos='r'))
                 else:
