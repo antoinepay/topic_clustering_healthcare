@@ -64,7 +64,7 @@ def preprocessing_sentence(column):
     # Tokenization
     tokens = sent_tokenize(str(column))
 
-    tokens = [token.lower() for token in tokens]
+    tokens = [token.lower().strip() for token in tokens]
 
     # Deleting specific characters
     special_characters = ["@", "/", "#", ".", ",", "!", "?", "(", ")",
@@ -87,14 +87,14 @@ def preprocessing_words(column, prep_type):
     tokens = word_tokenize(str(column))
 
     # Deleting words with  only one or 2 caracter
-    tokens = [token for token in tokens if len(token) > 3]
+    tokens = [token for token in tokens if len(token) > 3 and token.find(' ') == -1 and token.find('  ') == -1]
 
 
     # Deleting specific characters
     special_characters = ["@", "/", "#", ".", ",", "!", "?", "(", ")",
                           "-", "_", "’", "'", "\"", ":", "=", "+", "&",
                           "`", "*", "0", "1", "2", "3", "4", "5",
-                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t', " "]
+                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t']
     transformation_sc_dict = {initial: " " for initial in special_characters}
     tokens = [token.translate(str.maketrans(transformation_sc_dict)) for token in tokens]
 
@@ -219,7 +219,8 @@ def load_data(abstracts_path, with_preprocess=True):
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
-
+# remove verbs from title
+# remove verbs from text
 
 #
 # abstracts.title_clean_lemmatized[4]
