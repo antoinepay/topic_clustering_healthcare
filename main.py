@@ -105,14 +105,14 @@ def label_clusters(clusters, n_clusters, abstracts):
     :return labelled clusters
     """
 
-    clusters["title_clean_lemmatized"] = abstracts.title_clean_lemmatized.values
-    clusters["word_tokens_lemmatized"] = abstracts.word_tokens_lemmatized.values
+    clusters["title_clean_lemmatized"] = abstracts.nouns_lemmatized_title.values
+    clusters["nouns_lemmatized_text"] = abstracts.nouns_lemmatized_text.values
 
     labelled_clusters = []
 
     for k in range(n_clusters):
         cluster = clusters.loc[clusters.cluster == k, :]
-        words = [y for x in itertools.chain(cluster.title_clean_lemmatized) for y in x]
+        words = [y for x in itertools.chain(cluster.nouns_lemmatized_title) for y in x]
         most_common_words = Counter(words).most_common(5)
         print(k)
         print(most_common_words)
@@ -125,7 +125,7 @@ def label_clusters(clusters, n_clusters, abstracts):
 
 def evaluate_clusters(labelled_clusters):
 
-    embedded_category = np.array(BioWordVec.embed_text(labelled_clusters.word_tokens_lemmatized)[0])
+    embedded_category = np.array(BioWordVec.embed_text(labelled_clusters.nouns_lemmatized_text)[0])
     embedded_labels = np.array(BioWordVec.embed_text(labelled_clusters.labels)[0])
 
     similarity_vector = []
