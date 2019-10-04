@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+from scipy.spatial.distance import cosine
 
 from collections import Counter
 
@@ -15,6 +16,7 @@ import itertools
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from repository.abstracts import load_data
+from repository.preprocessing import launch_preprocessing
 
 # Constants
 
@@ -151,7 +153,12 @@ def evaluate_clusters(labelled_clusters):
     embedded_category = BioWordVec().embed_text(labelled_clusters.category)
     embedded_labels = BioWordVec().embed_text(labelled_clusters.labels)
 
-    return np.sqrt(mean_squared_error(embedded_category, embedded_labels))
+    similarity_vector = []
+
+    for i in range(len(embedded_labels)):
+        similarity_vector.append(cosine(embedded_category[i], embedded_labels[i]))
+
+    return np.sqrt(sum([a**2 for a in similarity_vector]))
 
 
 def nb_categories_in_clusters(labelled_clusters, n_clusters):

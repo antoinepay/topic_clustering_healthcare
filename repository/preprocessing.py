@@ -189,9 +189,12 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
+<<<<<<< HEAD
 # abstracts_path = 'data/CS2_Article_Clustering.xlsx'
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
 abstracts = launch_preprocessing(abstracts)
+=======
+>>>>>>> cosine similarity
 
 abstracts.text
 
