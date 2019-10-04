@@ -137,7 +137,7 @@ def lemmatization(tokenized_column):
 
     return lemmatized
 
-def lemmatization_noun(tokenized_column):
+def lemmatization(tokenized_column):
     """
     :param tokenized_column: a column of a dataframe that is tokenized
     :return: lemmatized list
@@ -148,18 +148,29 @@ def lemmatization_noun(tokenized_column):
     tags = [pos_tag(token) for token in tokenized_column]
     # initialized lemmatizred list:
     lemmatized = []
+    nouns_list = []
 
     for list in tags:
         # initialize empty intermediary liust
         result = []
-
+        nouns = []
         for word, tag in list:
 
             if tag.startswith("NN"):
                 result.append(wnl.lemmatize(word, pos='n'))
+                nouns.append(wnl.lemmatize(word, pos='n'))
+            elif tag.startswith("VB"):
+                result.append(wnl.lemmatize(word, pos='v'))
+            elif tag.startswith("JJ"):
+                result.append(wnl.lemmatize(word, pos='a'))
+            elif tag.startswith("R"):
+                result.append(wnl.lemmatize(word, pos='r'))
+            else:
+                result.append(word)
         lemmatized.append(result)
+        nouns_list.append(nouns)
 
-    return lemmatized
+    return lemmatized, nouns_list
 
 
 def detokenize(df_tokens, name_token_column):
@@ -186,8 +197,8 @@ def launch_preprocessing(df):
     df["title_clean"] = df["title"].apply(preprocessing_words, args=["title"])
 
     #lemmatize:
-    df["word_tokens_lemmatized"]=lemmatization(df["word_tokens"])
-    df["title_clean_lemmatized"]=lemmatization(df["title_clean"])
+    df["word_tokens_lemmatized"],df["nouns_lemmatized_text"]=lemmatization(df["word_tokens"])
+    df["title_clean_lemmatized"],df["nouns_lemmatized_title"]=lemmatization(df["title_clean"])
 
     final = detokenize(df, "word_tokens")
 

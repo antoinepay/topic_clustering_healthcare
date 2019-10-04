@@ -1,6 +1,6 @@
 # Libraries
 
-from modeling.clutering_model import ClusteringModel
+from modeling.clustering_model import ClusteringModel
 from sklearn.cluster import KMeans
 
 
