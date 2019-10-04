@@ -1,7 +1,8 @@
 # Libraries
 
-from modelling.clutering_model import ClusteringModel
+from modeling.clutering_model import ClusteringModel
 from sklearn.cluster import KMeans
+
 
 class KMeansModel(ClusteringModel):
 
@@ -9,4 +10,3 @@ class KMeansModel(ClusteringModel):
         super().__init__('kmeans')
 
         self.model = KMeans(n_clusters=n_clusters)
-

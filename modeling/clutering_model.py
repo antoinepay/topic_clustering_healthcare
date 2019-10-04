@@ -17,17 +17,18 @@ class ClusteringModel:
     def evaluate_clustering(self, clusters):
         pass
 
-    def plot_elbow(self, params):
+    def plot_elbow(self, features, params):
 
-        if not hasattr(self, 'inertia_'):
-            raise Exception('Missing inertia_ attribute to plot elbow graph')
+        #if not hasattr(self.model, 'inertia'):
+        #    raise Exception('Missing inertia_ attribute to plot elbow graph')
 
         inertia = []
 
         for param_set in params:
             self.model.set_params(**param_set)
+            self.model.fit(features)
             inertia.append(self.model.inertia_)
 
-        plt.plot(len(params), inertia)
+        plt.plot(range(len(params)), inertia)
         plt.show()
 

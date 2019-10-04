@@ -50,22 +50,6 @@ def embed_abstract(abstracts, embedding_type):
     return vectors, output_format
 
 
-def plot_inertia(vectors):
-    """
-    :param vectors: df with embedded text
-    :return: plot of inertia
-    """
-
-    inertia = []
-
-    for k in range(10, 50):
-        kmeans = KMeans(n_clusters=k, random_state=random_state).fit(vectors)
-        inertia.append(kmeans.inertia_)
-
-    plt.plot(range(10, 50), inertia)
-    plt.show()
-
-
 def make_kmeans(vectors, n_clusters):
     """
     :param vectors: df with embedded text
@@ -160,11 +144,20 @@ def nb_categories_in_clusters(labelled_clusters, n_clusters):
 # main
 
 abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
-vectors = embed_abstract(abstracts, "biowordvec")[0]
+vectors, output_format = embed_abstract(abstracts, "google_sentence")
 
 # Modeling
 
-plot_inertia(vectors)
+from modeling import KMeansModel
+
+kmeans_model = KMeansModel()
+
+params = [{'n_clusters': i} for i in range(10, 40, 2)]
+
+kmeans_model.plot_elbow(features=vectors, params=params)
+
+
+
 clusters = make_kmeans(vectors, 15)
 plot_kmeans(clusters)
 labelled_clusters = label_clusters(clusters, 15, abstracts)
