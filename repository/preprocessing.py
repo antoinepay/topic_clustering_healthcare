@@ -192,7 +192,9 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
+
 del abstracts
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
 abstracts = launch_preprocessing(abstracts)
+
 
