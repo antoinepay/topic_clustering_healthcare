@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import DBSCAN
+
 from scipy.spatial.distance import cosine
 
 from collections import Counter
@@ -68,6 +70,22 @@ def make_kmeans(vectors, n_clusters):
         axis=1
     )
 
+    return clusters
+
+
+
+def make_dbscan(vectors, eps, min_samples):
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric="cosine").fit(vectors)
+
+    clusters = pd.concat(
+        [
+            vectors,
+            pd.DataFrame(
+                [i for i in dbscan.fit_predict(vectors)],
+                columns=('cluster',))
+        ],
+        axis=1
+    )
     return clusters
 
 
