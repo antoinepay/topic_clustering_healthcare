@@ -107,7 +107,7 @@ def load_data(abstracts_path, with_preprocess=True):
     :param with_preprocess: Boolean to specify if we should apply preprocess pipeline
     :return: abstracts dataset preprocessed
     """
-    abstracts = pd.read_excel(abstracts_path)
+    abstracts = pd.read_excel(abstracts_path, index=False)
 
     if with_preprocess:
         from .preprocessing import launch_preprocessing

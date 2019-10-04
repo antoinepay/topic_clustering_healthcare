@@ -38,13 +38,14 @@ def stopword_list(prep_type):
 
     #     potential further stopwords (will have to test that)
     special_medical = ["complex", "patients", "treatment", "months",
-                       "rate", "prevalence", "case", "early", "management",
+                       "rate", "prevalence", "case", "early", "management", "data", "factors",
                        "reported", "information", "baseline", "study", "questionnaire", "results", "month", "months",
                        "years", "year", "status", "type", "cells", "cell", "nan",
-                        "among", "clinical", "associated"]
+                        "among", "clinical", "associated", "hospital", "care", "age", "iii", " ", "  ",
+                       "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
 
     if prep_type == "text":
-        stopW = normal_stopwords + comprehensive_stopwords
+        stopW = normal_stopwords + comprehensive_stopwords + special_medical
         # for the title, we also want to remove individual special words
     else:
         stopW = normal_stopwords + special_medical + comprehensive_stopwords
@@ -171,8 +172,26 @@ def launch_preprocessing(df):
 # comprehensive_stopwords
 
 
-abstracts_path = 'data/CS2_Article_Clustering.xlsx'
-abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
+def load_data(abstracts_path, with_preprocess=True):
+    """
+
+    :param abstracts_path: Path to preprocessed or not abstracts dataset
+    :param with_preprocess: Boolean to specify if we should apply preprocess pipeline
+    :return: abstracts dataset preprocessed
+    """
+    abstracts = pd.read_excel(abstracts_path)
+
+    if with_preprocess:
+        from .preprocessing import launch_preprocessing
+
+        abstracts = launch_preprocessing(abstracts)
+
+    return abstracts
+
+
+# abstracts_path = 'data/CS2_Article_Clustering.xlsx'
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
+abstracts = launch_preprocessing(abstracts)
 
 abstracts.text
 
