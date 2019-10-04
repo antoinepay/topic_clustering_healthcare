@@ -124,18 +124,18 @@ def lemmatization(tokenized_column):
         result = []
         nouns = []
         for word, tag in list:
-
-            if tag.startswith("NN"):
-                result.append(wnl.lemmatize(word, pos='n'))
-                nouns.append(wnl.lemmatize(word, pos='n'))
-            elif tag.startswith("VB"):
-                result.append(wnl.lemmatize(word, pos='v'))
-            elif tag.startswith("JJ"):
-                result.append(wnl.lemmatize(word, pos='a'))
-            elif tag.startswith("R"):
-                result.append(wnl.lemmatize(word, pos='r'))
-            else:
-                result.append(word)
+            if word != '    ':
+                if tag.startswith("NN"):
+                    result.append(wnl.lemmatize(word, pos='n'))
+                    nouns.append(wnl.lemmatize(word, pos='n'))
+                elif tag.startswith("VB"):
+                    result.append(wnl.lemmatize(word, pos='v'))
+                elif tag.startswith("JJ"):
+                    result.append(wnl.lemmatize(word, pos='a'))
+                elif tag.startswith("R"):
+                    result.append(wnl.lemmatize(word, pos='r'))
+                else:
+                    result.append(word)
         lemmatized.append(result)
         nouns_list.append(nouns)
 
