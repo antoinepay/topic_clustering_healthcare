@@ -14,7 +14,7 @@ class ClusteringModel:
     def perform_clustering(self, features):
         self.model.fit(features)
 
-    def evaluate_clustering(self, clusters):
+    def evaluate_clustering(self, labelled_clusters):
         pass
 
     def plot_elbow(self, features, params):
