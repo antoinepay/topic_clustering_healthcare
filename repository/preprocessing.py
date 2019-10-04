@@ -196,7 +196,7 @@ def load_data(abstracts_path, with_preprocess=True):
 
 
 
-abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
-abstracts = launch_preprocessing(abstracts)
+#abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
+#abstracts = launch_preprocessing(abstracts)
 
 # abstracts.to_csv('data/abstracts_preproc.csv', index=False)
