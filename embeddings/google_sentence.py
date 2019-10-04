@@ -1,52 +1,52 @@
 # Libraries
+
 import pandas as pd
-import numpy as np
 
 import tensorflow_hub as hub
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
 
-# Constants
-
-OUTPUT_FORMAT = {
-    'n_cols': 512
-}
-
-MODULE = "https://tfhub.dev/google/universal-sentence-encoder-large/3"
-
-# Core functions
+from embeddings.embedder import Embedder
 
 
-def embed_useT(module):
-    """
-    :param module: url of the module
-    :return: session
-    """
-    with tf.Graph().as_default():
-        sentences = tf.placeholder(tf.string)
-        embed = hub.Module(module)
-        embeddings = embed(sentences)
-        session = tf.train.MonitoredSession()
-    return lambda x: session.run(embeddings, {sentences: x})
+class GoogleSentence(Embedder):
+
+    def __init__(self):
+        super().__init__('google_sentence')
+
+        tf.disable_v2_behavior()
+
+        self.output_format = {
+            'n_cols': 512
+        }
+
+        self.trained_model = "https://tfhub.dev/google/universal-sentence-encoder-large/3"
+
+    def embed_use_tf(self, module):
+        """
+        :param module: url of the module
+        :return: session
+        """
+        with tf.Graph().as_default():
+            sentences = tf.placeholder(tf.string)
+            embed = hub.Module(module)
+            embeddings = embed(sentences)
+            session = tf.train.MonitoredSession()
+        return lambda x: session.run(embeddings, {sentences: x})
+
+    def embed_text(self, abstracts):
+        """
+        :param abstracts: pandas Series of abstracts
+        :return: embedding and associated format
+        """
+
+        embed_fn = self.embed_use_tf(self.trained_model)
+
+        embedding = pd.DataFrame(embed_fn(abstracts.tolist()))
+
+        return embedding, self.output_format
 
 
-def embed_text(abstracts, output_format=None):
-    """
-    :param abstracts: pandas Series of abstracts
-    :param output_format: dict specifying output format of the embedding method
-    :return: embedding and associated format
-    """
 
-    if output_format is None:
-        output_format = OUTPUT_FORMAT
-
-    sentences = list(abstracts)
-
-    embed_fn = embed_useT(MODULE)
-
-    embedding = pd.DataFrame(embed_fn(sentences))
-
-    return embedding, output_format
 
 
 

@@ -13,9 +13,8 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import itertools
 
-from embeddings import biowordvec, elmo, google_sentence, word2vec, bert
+from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from repository.abstracts import load_data
-from repository import preprocessing
 
 # Constants
 
@@ -29,19 +28,19 @@ abstracts_path = 'data/CS2_Article_Clustering.xlsx'
 def embed_abstract(abstracts, embedding_type):
 
     if embedding_type == "word2vec":
-        vectors, output_format = word2vec.embed_text(abstracts.word_tokens)
+        vectors, output_format = Word2Vec().embed_text(abstracts.word_tokens)
 
     elif embedding_type == "biowordvec":
-        vectors, output_format = biowordvec.embed_text(abstracts.word_tokens)
+        vectors, output_format = BioWordVec().embed_text(abstracts.word_tokens)
 
     elif embedding_type == "google_sentence":
-        vectors, output_format = google_sentence.embed_text(abstracts.sentence_tokens)
+        vectors, output_format = GoogleSentence().embed_text(abstracts.sentence_tokens)
 
     elif embedding_type == "elmo":
-        vectors, output_format = elmo.embed_text(abstracts.word_tokens)
+        vectors, output_format = ELMo().embed_text(abstracts.word_tokens)
 
     elif embedding_type == "bert":
-        vectors, output_format = bert.embed_text(abstracts.word_tokens)
+        vectors, output_format = Bert().embed_text(abstracts.word_tokens)
 
     else:
         raise Exception("Embedding type should be word2vec, biowordvec, google_sentence, elmo or bert")
@@ -149,8 +148,8 @@ def evaluate_clusters(labelled_clusters):
         if type(clusters.loc[i, "category"]) is float:
             clusters.loc[i, "category"] = ["nan"]
 
-    embedded_category = biowordvec.embed_text(labelled_clusters.category)
-    embedded_labels = biowordvec.embed_text(labelled_clusters.labels)
+    embedded_category = BioWordVec().embed_text(labelled_clusters.category)
+    embedded_labels = BioWordVec().embed_text(labelled_clusters.labels)
 
     return np.sqrt(mean_squared_error(embedded_category, embedded_labels))
 
