@@ -27,7 +27,7 @@ def nltk_package_downloads():
 
 def stopword_list(prep_type):
     """
-    :param prep_type: a string containing the type of preproceesing, i.e. "title" or "text"
+    :param prep_type: a string containing the type of preprocessing, i.e. "title" or "text"
     :return: a list with stopwords
     """
     # stopwords + lowercase
@@ -94,7 +94,7 @@ def preprocessing_words(column, prep_type):
     special_characters = ["@", "/", "#", ".", ",", "!", "?", "(", ")",
                           "-", "_", "’", "'", "\"", ":", "=", "+", "&",
                           "`", "*", "0", "1", "2", "3", "4", "5",
-                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t']
+                          "6", "7", "8", "9", "'", '.', '‘', ';', '\t', ' ']
     transformation_sc_dict = {initial: " " for initial in special_characters}
     tokens = [token.translate(str.maketrans(transformation_sc_dict)) for token in tokens]
 
@@ -102,6 +102,7 @@ def preprocessing_words(column, prep_type):
     stopW = stopword_list(prep_type)
 
     tokens = [token.lower() for token in tokens if token.lower() not in stopW]
+    tokens = [token.strip() for token in tokens]
     return tokens
 
 
@@ -194,6 +195,13 @@ def load_data(abstracts_path, with_preprocess=True):
 
     return abstracts
 
+
+
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
+abstracts = launch_preprocessing(abstracts)
+
+abstracts.word_tokens_lemmatized[0]
+abstracts.nouns_lemmatized_text[0]
 
 
 
