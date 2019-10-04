@@ -171,7 +171,8 @@ def launch_preprocessing(df):
 # comprehensive_stopwords
 
 
+abstracts_path = 'data/CS2_Article_Clustering.xlsx'
+abstracts = load_data(abstracts_path=abstracts_path, with_preprocess=True)
 
-launch_preprocessing(abstracts)
-
+abstracts.text
 
