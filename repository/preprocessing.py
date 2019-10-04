@@ -216,11 +216,25 @@ def load_data(abstracts_path, with_preprocess=True):
     return abstracts
 
 
+<<<<<<< HEAD
 abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx', index=False)
 abstracts = launch_preprocessing(abstracts)
 
+<<<<<<< HEAD
 # remove verbs from title
 # remove verbs from text
+=======
+=======
+
+# abstracts_path = 'data/CS2_Article_Clustering.xlsx'
+abstracts = pd.read_excel('data/CS2_Article_Clustering.xlsx',index=False)
+abstracts = launch_preprocessing(abstracts)
+
+
+
+>>>>>>> fix rmse
+
+>>>>>>> bbb7e348842dd4b389e01deb6a86a812a2ed2524
 
 #
 # abstracts.title_clean_lemmatized[4]
