@@ -61,8 +61,3 @@ class Word2Vec(Embedder):
         embedding = pd.DataFrame(self.word2vec_features(abstracts, word_vectors))
 
         return embedding, output_format
-
-
-
-
-
