@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
+from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec, Word2VecTFIDF
 from repository.preprocessing import launch_preprocessing
 from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
 
@@ -18,6 +18,9 @@ abstracts_path = 'data/CS2_Article_Clustering.xlsx'
 def embed_abstract(abstracts, embedding_type):
     if embedding_type == "word2vec":
         vectors, output_format = Word2Vec().embed_text(abstracts.nouns_lemmatized_text)
+
+    elif embedding_type == "word2vec_tfidf":
+        vectors, output_format = Word2VecTFIDF().embed_text(abstracts.nouns_lemmatized_text)
 
     elif embedding_type == "biowordvec":
         vectors, output_format = BioWordVec().embed_text(abstracts.nouns_lemmatized_text)
@@ -42,6 +45,8 @@ abstracts = launch_preprocessing(abstracts)
 
 import pandas as pd
 abstracts = pd.read_csv('data/abstracts_preproc.csv')
+
+vectors, output_format = embed_abstract(abstracts, "word2vec")
 
 vectors, output_format = embed_abstract(abstracts, "word2vec")
 
