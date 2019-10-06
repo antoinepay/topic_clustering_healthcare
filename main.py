@@ -4,7 +4,8 @@ import pandas as pd
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from repository.preprocessing import launch_preprocessing
-from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
+from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel, ClusterLabelsCombiner
+
 
 # Constants
 
@@ -41,9 +42,13 @@ abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
 
 import pandas as pd
-abstracts = pd.read_csv('data/abstracts_preproc.csv')
+abstracts = pd.read_csv('data/abstracts_preproc.csv',
+                        converters={
+                            "nouns_lemmatized_title": lambda x: x.strip("[]").replace("'", "").split(", "),
+                            "nouns_lemmatized_text": lambda x: x.strip("[]").replace("'", "").split(", ")
+                        })
 
-vectors, output_format = embed_abstract(abstracts, "word2vec")
+vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
 # Modeling
 
@@ -99,3 +104,13 @@ clusters = model.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
 labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+
+
+# Clusters Combiner
+
+clc = ClusterLabelsCombiner([
+    (model, vectors),
+    (model, vectors)
+])
+
+clc.combine(abstracts=abstracts, n_clusters=10, number_of_tags_to_keep=5)
