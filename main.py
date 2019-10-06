@@ -45,6 +45,9 @@ abstracts = pd.read_csv('data/abstracts_preproc.csv')
 
 vectors, output_format = embed_abstract(abstracts, "word2vec")
 
+# vectors1, output_format1 = embed_abstract(abstracts, "elmo")
+
+
 # Modeling
 
 

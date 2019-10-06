@@ -1,7 +1,7 @@
 # Libraries
 
 import pandas as pd
-# from bert_embedding import BertEmbedding
+from bert_embedding import BertEmbedding
 
 from embeddings.embedder import Embedder
 
