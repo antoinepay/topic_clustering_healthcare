@@ -1,10 +1,9 @@
 # Libraries
-
 import pandas as pd
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
-from embeddings import Word2Vec
 from embeddings import Word2VecTFIDF
+
 from repository.preprocessing import launch_preprocessing
 from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
 

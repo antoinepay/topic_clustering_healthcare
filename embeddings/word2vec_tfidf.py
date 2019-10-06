@@ -1,5 +1,4 @@
 # Libraries
-
 import pandas as pd
 import numpy as np
 from gensim.models.keyedvectors import KeyedVectors
@@ -61,7 +60,7 @@ class Word2VecTFIDF(Embedder):
 
 
 
-        embedding = pd.DataFrame(self.word2vec_features(abstracts, word_vectors))
+        # embedding = pd.DataFrame(self.word2vec_features(abstracts, word_vectors))
 
         embedding = pd.DataFrame(self.get_vect(w, word_vectors) for w in abstracts)
 
