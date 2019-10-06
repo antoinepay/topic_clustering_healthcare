@@ -44,10 +44,19 @@ def embed_abstract(abstracts, embedding_type):
 abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
 
-import pandas as pd
+
 abstracts = pd.read_csv('data/abstracts_preproc.csv')
 
 vectors, output_format = embed_abstract(abstracts, "word2vec")
+
+
+# give word
+# get df_tfidf from TFIDF.py
+veco = df_tfidf.copy()
+for col in veco.columns:
+    veco[col].values[:] = 0
+# veco.to_numpy().sum()
+# check that it equals 0
 
 vectors, output_format = embed_abstract(abstracts, "word2vec_tfidf")
 
