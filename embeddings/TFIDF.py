@@ -58,7 +58,17 @@ df_tfidf = perform_tfidf(abstracts.nouns_lemmatized_text)
 print(vectors)
 print(output_format)
 
-get_weight(0)[0]
+get_weight(0)
 vectors[0]
 
-vectors
+vectors.shape[0]
+
+
+W = get_weight(doc_no)
+# vectors = get_embedding(np.array(W.index))
+
+
+for word in range(6909):
+    # multiply weight by embedding, same shape as embedding
+    # x vectors[word] what ???? 300 columns?
+    vectors[word] = np.array(W)[word] * vectors[word][]
