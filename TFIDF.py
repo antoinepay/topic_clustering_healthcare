@@ -8,33 +8,15 @@ import numpy as np
 
 # on processing nouns
 
-def perform_tfidf(df,col,num_words):
+def perform_tfidf(df_col):
     vectorizer = TfidfVectorizer()
-    response = vectorizer.fit_transform((df.col))
+    response = vectorizer.fit_transform((df_col))
 
     feature_names_en = np.array(vectorizer.get_feature_names())
 
-    df_sklearn_total_en = pd.DataFrame(response.todense(), columns=feature_names_en)
+    df_tfidf = pd.DataFrame(response.todense(), columns=feature_names_en)
 
-    return df_sklearn_total_en
-
-
-
-
-abstracts = pd.read_csv('data/abstracts_preproc.csv')
-abstracts.columns
-
-abstracts.nouns_lemmatized_text
-
-vectorizer = TfidfVectorizer()
-response = vectorizer.fit_transform((abstracts.nouns_lemmatized_text))
-
-feature_names = np.array(vectorizer.get_feature_names())
-
-df = pd.DataFrame(response.todense(), columns=feature_names_en)
-df_T = df.T
-
-
+    return df_tfidf
 
 
 def get_weight(doc_no):
@@ -64,6 +46,30 @@ def weighted_sum(doc_no,vectors):
    #  now sum all the words in the document
    sum_all = (vectors.sum(axis=1))/(np.array(W).sum())
    return sum_all
+
+
+
+abstracts = pd.read_csv('data/abstracts_preproc.csv')
+abstracts.columns
+
+df_tfidf = perform_tfidf(abstracts.nouns_lemmatized_text)
+
+# construct a dataframe of summed vectors for each document. Document in column, vect param in rows.
+for doc in documents:
+    weighted_sum(doc)
+
+
+# for the embeddings we have: vectors and output_format
+print(vectors)
+print(output_format)
+
+
+
+
+
+
+
+
 
 
 

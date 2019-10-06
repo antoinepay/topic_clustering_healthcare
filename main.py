@@ -39,7 +39,11 @@ def embed_abstract(abstracts, embedding_type):
 
 abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
-vectors, output_format = embed_abstract(abstracts, "biowordvec")
+
+import pandas as pd
+abstracts = pd.read_csv('data/abstracts_preproc.csv')
+
+vectors, output_format = embed_abstract(abstracts, "word2vec")
 
 # Modeling
 
