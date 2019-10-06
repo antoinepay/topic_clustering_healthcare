@@ -21,7 +21,7 @@ def perform_tfidf(df_col):
 
 def get_weight(doc_no):
    #  extract the column of the doc you want
-   return (df_T.iloc[:,doc_no])
+   return (df_tfidf.T.iloc[:,doc_no])
 
 
 def get_embedding(words_to_embed):
@@ -38,7 +38,7 @@ def weighted_sum(doc_no,vectors):
 
    for word in range(vectors.shape[0]):
        # multiply weight by embedding, same shape as embedding
-       vectors[word, :] = np.array(W)[word]*vectors[word, :]
+       vectors[word] = np.array(W)[word]*vectors[word]
 
 
    #  now sum all the words in the document
@@ -51,10 +51,6 @@ abstracts = pd.read_csv('data/abstracts_preproc.csv')
 abstracts.columns
 
 df_tfidf = perform_tfidf(abstracts.nouns_lemmatized_text)
-
-# construct a dataframe of summed vectors for each document. Document in column, vect param in rows.
-for doc in documents:
-    weighted_sum(doc)
 
 
 # for the embeddings we have: vectors and output_format
