@@ -8,6 +8,7 @@ from embeddings.embedder import Embedder
 # to download the self trained model: https://stackoverflow.com/questions/46433778/import-googlenews-vectors-negative300-bin
 # https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz
 
+
 class Word2VecTFIDF(Embedder):
 
     def __init__(self):
@@ -56,8 +57,13 @@ class Word2VecTFIDF(Embedder):
         :return: embedding and associated format
         """
 
-        word_vectors = KeyedVectors.load_word2vec_format(self.trained_model, binary=True)
+        word_vectors = pd.DataFrame(KeyedVectors.load_word2vec_format(self.trained_model, binary=True))
+
+
 
         embedding = pd.DataFrame(self.word2vec_features(abstracts, word_vectors))
 
-        return word_vectors, output_format
+        embedding = pd.DataFrame(self.get_vect(w, word_vectors) for w in abstracts)
+
+
+        return embedding, output_format

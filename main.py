@@ -2,7 +2,9 @@
 
 import pandas as pd
 
-from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec, Word2VecTFIDF
+from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
+from embeddings import Word2Vec
+from embeddings import Word2VecTFIDF
 from repository.preprocessing import launch_preprocessing
 from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
 
@@ -48,9 +50,7 @@ abstracts = pd.read_csv('data/abstracts_preproc.csv')
 
 vectors, output_format = embed_abstract(abstracts, "word2vec")
 
-vectors, output_format = embed_abstract(abstracts, "word2vec")
-
-# vectors1, output_format1 = embed_abstract(abstracts, "elmo")
+vectors, output_format = embed_abstract(abstracts, "word2vec_tfidf")
 
 
 # Modeling

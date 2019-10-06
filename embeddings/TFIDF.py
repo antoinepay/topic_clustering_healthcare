@@ -21,15 +21,6 @@ def get_weight(doc_no):
    #  extract the column of the doc you want
    return (df_tfidf.T.iloc[:,doc_no])
 
-
-def get_embedding(words_to_embed):
-   '''input: liste de mot
-   output: array vecteur correspondants aux embed (n_mots x n_dimensions)
-   '''
-   return(output)
-
-
-
 def weighted_sum(doc_no,vec= vectors):
    W=get_weight(doc_no)
    #vectors = get_embedding(np.array(W.index))
