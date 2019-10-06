@@ -32,17 +32,18 @@ def get_embedding(words_to_embed):
 
 
 
-def weighted_sum(doc_no,vectors):
+def weighted_sum(doc_no,vec= vectors):
    W=get_weight(doc_no)
    #vectors = get_embedding(np.array(W.index))
 
-   for word in range(vectors.shape[0]):
+   #  is it shape(1) or shape(0)?
+   for word in range(vec.shape[0]):
        # multiply weight by embedding, same shape as embedding
-       vectors[word] = np.array(W)[word]*vectors[word]
+       vec[word] = np.array(W)[word]*vec[word]
 
 
    #  now sum all the words in the document
-   sum_all = (vectors.sum(axis=1))/(np.array(W).sum())
+   sum_all = (vec.sum(axis=1))/(np.array(W).sum())
    return sum_all
 
 
@@ -56,3 +57,8 @@ df_tfidf = perform_tfidf(abstracts.nouns_lemmatized_text)
 # for the embeddings we have: vectors and output_format
 print(vectors)
 print(output_format)
+
+get_weight(0)[0]
+vectors[0]
+
+vectors
