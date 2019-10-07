@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-# import tensorflow_hub as hub
+import tensorflow_hub as hub
 import tensorflow.compat.v1 as tf
 
 from embeddings.embedder import Embedder

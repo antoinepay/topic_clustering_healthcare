@@ -53,7 +53,10 @@ abstracts = pd.read_csv('data/abstracts_preproc.csv',
 
 vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
-vectors_elmo, output_format_elmo = embed_abstract(abstracts, "elmo")
+vectors_gs, output_format_gs = embed_abstract(abstracts, "google_sentence")
+
+vectors_gs.to_csv('data/gs_embedding.csv')
+
 vectors_bert, output_format_bert = embed_abstract(abstracts, "bert")
 
 
@@ -135,10 +138,12 @@ labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 # Clusters Combiner
 
+vectors_bert = pd.read_csv('bert_embedding.csv')
+
 clc = ClusterLabelsCombiner([
-    (KMeansModel(n_clusters=100), vectors_bert),
-    (AffinityPropagationModel(), vectors_bert),
-    (BirchModel(n_clusters=100), vectors_bert)
+    (KMeansModel(n_clusters=100), vectors_gs),
+    (AffinityPropagationModel(), vectors_gs),
+    (BirchModel(n_clusters=100), vectors_gs)
 ])
 
 labels = pd.DataFrame(clc.combine(abstracts=abstracts, number_of_tags_to_keep=5))
@@ -149,8 +154,6 @@ embedder = BioWordVec()
 
 for i, (model, vectors) in enumerate(clc.models_vectors_mapping):
     rmse_combiner.append(model.evaluate_clusters(embedder=embedder, labelled_clusters=clc.clusters[i]))
-
-
 
 
 a = pd.DataFrame(labels)

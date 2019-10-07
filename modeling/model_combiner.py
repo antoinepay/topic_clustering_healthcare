@@ -1,6 +1,7 @@
 # Libraries
 import pandas as pd
 import numpy as np
+import time
 from collections import Counter
 
 
@@ -26,7 +27,14 @@ class ClusterLabelsCombiner:
         """
         :return: list with fitted models associated with the used embedding
         """
-        return [model.perform_clustering(vectors) for model, vectors in self.models_vectors_mapping]
+        clusters = []
+
+        for model, vectors in self.models_vectors_mapping:
+            print('Fitting {method}'.format(method=model.model_type))
+            start = time.time()
+            clusters.append(model.perform_clustering(vectors))
+            print('Model {method} fitted in {time} s'.format(method=model.model_type, time=time.time() - start))
+        return clusters
 
     def get_clusters_from_models(self, abstracts):
         """
