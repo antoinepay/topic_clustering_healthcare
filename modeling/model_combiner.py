@@ -28,14 +28,13 @@ class ClusterLabelsCombiner:
         """
         return [model.perform_clustering(vectors) for model, vectors in self.models_vectors_mapping]
 
-    def get_clusters_from_models(self, abstracts, n_clusters):
+    def get_clusters_from_models(self, abstracts):
         """
         :return: list of pandas Series with predicted clusters for each embedding
         """
         return [pd.Series(model.label_clusters(
             clusters=self.clusters[i],
-            abstracts=abstracts,
-            n_clusters=n_clusters
+            abstracts=abstracts
         ).labels) for i, (model, vectors) in enumerate(self.models_vectors_mapping)]
 
     def concat_labels(self, labels):
@@ -92,12 +91,12 @@ class ClusterLabelsCombiner:
 
         return most_relevant_words
 
-    def combine(self, abstracts, n_clusters=10, number_of_tags_to_keep=5):
+    def combine(self, abstracts, number_of_tags_to_keep=5):
         """
         Final function to call
         :return:
         """
-        clusters = self.get_clusters_from_models(abstracts=abstracts, n_clusters=n_clusters)
+        clusters = self.get_clusters_from_models(abstracts=abstracts)
 
         labels = self.concat_labels(clusters)
 

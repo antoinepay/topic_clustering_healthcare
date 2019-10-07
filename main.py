@@ -2,12 +2,11 @@
 import pandas as pd
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
-from embeddings import Word2VecTFIDF
+#from embeddings import Word2VecTFIDF
 
 from repository.preprocessing import launch_preprocessing
 
-from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel, OPTICSModel, ClusterLabelsCombiner
-
+from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, BirchModel, OPTICSModel, ClusterLabelsCombiner
 
 # Constants
 
@@ -32,10 +31,10 @@ def embed_abstract(abstracts, embedding_type):
         vectors, output_format = GoogleSentence().embed_text(abstracts.sentence_tokens)
 
     elif embedding_type == "elmo":
-        vectors, output_format = ELMo().embed_text(abstracts.nouns_lemmatized_text)
+        vectors, output_format = ELMo().embed_text(abstracts.nouns_lemmatized_text.apply(" ".join))
 
     elif embedding_type == "bert":
-        vectors, output_format = Bert().embed_text(abstracts.nouns_lemmatized_text)
+        vectors, output_format = Bert().embed_text(abstracts.nouns_lemmatized_text.apply(" ".join))
 
     else:
         raise Exception("Embedding type should be word2vec, biowordvec, google_sentence, elmo or bert")
@@ -53,6 +52,9 @@ abstracts = pd.read_csv('data/abstracts_preproc.csv',
                         })
 
 vectors, output_format = embed_abstract(abstracts, "biowordvec")
+
+vectors_elmo, output_format_elmo = embed_abstract(abstracts, "elmo")
+vectors_bert, output_format_bert = embed_abstract(abstracts, "bert")
 
 
 # give word
@@ -82,11 +84,11 @@ model_kmeans = model_kmeans.set_model_parameters(n_clusters=n_clusters)
 clusters = model_kmeans.perform_clustering(features=vectors)
 model_kmeans.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model_kmeans.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model_kmeans.label_clusters(clusters=clusters, abstracts=abstracts)
 
 rmse_kmeans = model_kmeans.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
 
-model_kmeans.nb_categories_in_clusters(labelled_clusters=labelled_clusters, n_clusters=n_clusters)
+model_kmeans.nb_categories_in_clusters(labelled_clusters=labelled_clusters)
 
 
 # DBSCAN
@@ -99,7 +101,7 @@ model = DBSCANModel(eps=eps, min_samples=min_samples, metric="cosine")
 clusters = model.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 #OPTICS
 min_samples = 20
@@ -109,7 +111,7 @@ model = OPTICSModel(min_samples = min_samples,  metric="cosine")
 clusters = model.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 # Affinity Propagation
 
@@ -118,24 +120,37 @@ model_affinity = AffinityPropagationModel()
 clusters = model_affinity.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 
-# MeanShift
+# Birch
 
-model = MeanShiftModel()
+model = BirchModel(n_clusters=20)
 
 clusters = model.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 
 # Clusters Combiner
 
 clc = ClusterLabelsCombiner([
-    (model_kmeans, vectors),
-    (model_affinity, vectors)
+    (KMeansModel(n_clusters=100), vectors_bert),
+    (AffinityPropagationModel(), vectors_bert),
+    (BirchModel(n_clusters=100), vectors_bert)
 ])
 
-clc.combine(abstracts=abstracts, n_clusters=10, number_of_tags_to_keep=5)
+labels = pd.DataFrame(clc.combine(abstracts=abstracts, number_of_tags_to_keep=5))
+
+rmse_combiner = []
+
+embedder = BioWordVec()
+
+for i, (model, vectors) in enumerate(clc.models_vectors_mapping):
+    rmse_combiner.append(model.evaluate_clusters(embedder=embedder, labelled_clusters=clc.clusters[i]))
+
+
+
+
+a = pd.DataFrame(labels)
