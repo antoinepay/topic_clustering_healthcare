@@ -41,7 +41,6 @@ def embed_abstract(abstracts, embedding_type):
 abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
 
-import pandas as pd
 abstracts = pd.read_csv('data/abstracts_preproc.csv',
                         converters={
                             "nouns_lemmatized_title": lambda x: x.strip("[]").replace("'", "").split(", "),
@@ -55,22 +54,22 @@ vectors, output_format = embed_abstract(abstracts, "biowordvec")
 
 # KMeans
 
-model = KMeansModel()
+model_kmeans = KMeansModel()
 
 params = [{'n_clusters': i} for i in range(10, 40, 2)]
-model.plot_elbow(features=vectors, params=params)
+model_kmeans.plot_elbow(features=vectors, params=params)
 
-n_clusters = 10
+n_clusters = 100
 
-model = model.set_model_parameters(n_clusters=n_clusters)
-clusters = model.perform_clustering(features=vectors)
-model.plot_from_pca(clusters=clusters)
+model_kmeans = model_kmeans.set_model_parameters(n_clusters=n_clusters)
+clusters = model_kmeans.perform_clustering(features=vectors)
+model_kmeans.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
+labelled_clusters = model_kmeans.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
 
-rmse_kmeans = model.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
+rmse_kmeans = model_kmeans.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
 
-model.nb_categories_in_clusters(labelled_clusters=labelled_clusters, n_clusters=n_clusters)
+model_kmeans.nb_categories_in_clusters(labelled_clusters=labelled_clusters, n_clusters=n_clusters)
 
 
 # DBSCAN
@@ -88,9 +87,9 @@ labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts,
 
 # Affinity Propagation
 
-model = AffinityPropagationModel()
+model_affinity = AffinityPropagationModel()
 
-clusters = model.perform_clustering(features=vectors)
+clusters = model_affinity.perform_clustering(features=vectors)
 model.plot_from_pca(clusters=clusters)
 
 labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
@@ -109,8 +108,8 @@ labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts,
 # Clusters Combiner
 
 clc = ClusterLabelsCombiner([
-    (model, vectors),
-    (model, vectors)
+    (model_kmeans, vectors),
+    (model_affinity, vectors)
 ])
 
 clc.combine(abstracts=abstracts, n_clusters=10, number_of_tags_to_keep=5)
