@@ -5,7 +5,7 @@ from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
 from embeddings import Word2VecTFIDF
 
 from repository.preprocessing import launch_preprocessing
-from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel
+from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, MeanShiftModel, OPTICSModel
 
 # Constants
 
@@ -96,6 +96,15 @@ model.plot_from_pca(clusters=clusters)
 
 labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
 
+#OPTICS
+min_samples = 20
+
+model = OPTICSModel(min_samples = min_samples,  metric="cosine")
+
+clusters = model.perform_clustering(features=vectors)
+model.plot_from_pca(clusters=clusters)
+
+labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts, n_clusters=n_clusters)
 
 # Affinity Propagation
 
