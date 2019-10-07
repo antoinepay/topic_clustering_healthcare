@@ -69,15 +69,15 @@ class ClusteringModel:
 
         return np.sqrt(sum([a ** 2 for a in similarity_vector]) / len(similarity_vector))
 
-    def plot_elbow(self, features, params):
+    def plot_elbow(self, features, range):
         inertia = []
 
-        for param_set in params:
-            self.model.set_params(**param_set)
+        for r in range:
+            self.model.set_params(n_clusters=r)
             self.model.fit(features)
             inertia.append(self.model.inertia_)
 
-        plt.plot(range(len(params)), inertia)
+        plt.plot(range, inertia)
         plt.show()
 
     def plot_from_pca(self, clusters):

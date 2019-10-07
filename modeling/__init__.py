@@ -4,3 +4,5 @@ from modeling.dbscan import DBSCANModel
 from modeling.OPTICS import OPTICSModel
 from modeling.meanshift import MeanShiftModel
 from modeling.model_combiner import ClusterLabelsCombiner
+from modeling.ahc import AHCModel
+
