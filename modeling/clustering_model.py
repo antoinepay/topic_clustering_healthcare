@@ -57,7 +57,8 @@ class ClusteringModel:
 
         return clusters
 
-    def evaluate_clusters(self, embedder, labelled_clusters):
+    @staticmethod
+    def evaluate_clusters(embedder, labelled_clusters):
 
         embedded_category = np.array(embedder.embed_text(labelled_clusters.nouns_lemmatized_text)[0])
         embedded_labels = np.array(embedder.embed_text(labelled_clusters.labels)[0])

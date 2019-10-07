@@ -4,6 +4,8 @@ import numpy as np
 import time
 from collections import Counter
 
+from modeling.clustering_model import ClusteringModel
+
 
 class ClusterLabelsCombiner:
 
@@ -22,6 +24,8 @@ class ClusterLabelsCombiner:
         self.models_vectors_mapping = models_vectors_mapping
 
         self.clusters = self.fit_models()
+
+        self.labels = pd.DataFrame()
 
     def fit_models(self):
         """
@@ -108,4 +112,18 @@ class ClusterLabelsCombiner:
 
         labels = self.concat_labels(clusters)
 
-        return self.tfidf(labels=labels, number_of_tags_to_keep=number_of_tags_to_keep)
+        labels = self.tfidf(labels=labels, number_of_tags_to_keep=number_of_tags_to_keep)
+
+        self.labels['labels'] = labels
+
+        return self
+
+    def evaluate(self, embedder, abstracts):
+        """
+        :param embedder: Embedder used to embed labels
+        :param abstracts: original abstracts
+        :return: RMSE computed
+        """
+        labelled_clusters = pd.concat([self.labels, abstracts], axis=1)
+
+        return ClusteringModel.evaluate_clusters(embedder=embedder, labelled_clusters=labelled_clusters)

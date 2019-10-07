@@ -89,7 +89,7 @@ model_kmeans.plot_from_pca(clusters=clusters)
 
 labelled_clusters = model_kmeans.label_clusters(clusters=clusters, abstracts=abstracts)
 
-rmse_kmeans = model_kmeans.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
+rmse_kmeans = KMeansModel.evaluate_clusters(embedder=BioWordVec(), labelled_clusters=labelled_clusters)
 
 model_kmeans.nb_categories_in_clusters(labelled_clusters=labelled_clusters)
 
@@ -138,22 +138,16 @@ labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
 
 # Clusters Combiner
 
-vectors_bert = pd.read_csv('bert_embedding.csv')
+vectors_bert = pd.read_csv('data/bert_embedding.csv')
 
 clc = ClusterLabelsCombiner([
-    (KMeansModel(n_clusters=100), vectors_gs),
-    (AffinityPropagationModel(), vectors_gs),
-    (BirchModel(n_clusters=100), vectors_gs)
+    (KMeansModel(n_clusters=100), vectors),
+    (AffinityPropagationModel(), vectors),
+    (BirchModel(n_clusters=100), vectors),
+    (KMeansModel(n_clusters=150), vectors_bert),
+    (BirchModel(n_clusters=150), vectors_bert)
 ])
 
-labels = pd.DataFrame(clc.combine(abstracts=abstracts, number_of_tags_to_keep=5))
+labels = clc.combine(abstracts=abstracts, number_of_tags_to_keep=5)
 
-rmse_combiner = []
-
-embedder = BioWordVec()
-
-for i, (model, vectors) in enumerate(clc.models_vectors_mapping):
-    rmse_combiner.append(model.evaluate_clusters(embedder=embedder, labelled_clusters=clc.clusters[i]))
-
-
-a = pd.DataFrame(labels)
+rmse = clc.evaluate(embedder=BioWordVec(), abstracts=abstracts)
