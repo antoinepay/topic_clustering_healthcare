@@ -40,7 +40,7 @@ class ClusteringModel:
         :param clusters: df with clusters
         :param abstracts: df with all the information
         :param n_clusters: int nb clusters
-        :return labelled clusters
+        :return labelled clusters with full information
         """
 
         clusters["nouns_lemmatized_title"] = abstracts.nouns_lemmatized_title.values
