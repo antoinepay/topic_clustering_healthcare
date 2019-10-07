@@ -35,19 +35,18 @@ class ClusteringModel:
             axis=1
         )
 
-    def label_clusters(self, clusters, abstracts, n_clusters):
+    def label_clusters(self, clusters, abstracts):
         """
         :param clusters: df with clusters
         :param abstracts: df with all the information
-        :param n_clusters: int nb clusters
-        :return labelled clusters with full information
+        :return labelled clusters
         """
 
         clusters["nouns_lemmatized_title"] = abstracts.nouns_lemmatized_title.values
         clusters["nouns_lemmatized_text"] = abstracts.nouns_lemmatized_text.values
         clusters["category"] = abstracts.category
 
-        for k in range(n_clusters):
+        for k in range(len(pd.unique(clusters.cluster))):
             cluster = clusters.loc[clusters.cluster == k, :]
             words = [y for x in itertools.chain(cluster.nouns_lemmatized_title) for y in x]
             most_common_words = Counter(words).most_common(5)
@@ -102,8 +101,8 @@ class ClusteringModel:
         plt.scatter(clusters.dim_1, clusters.dim_2, c=clusters.cluster, alpha=0.8)
         plt.show()
 
-    def nb_categories_in_clusters(self, labelled_clusters, n_clusters):
-        return len(labelled_clusters.groupby(["cluster", "category"]).count()) / n_clusters
+    def nb_categories_in_clusters(self, labelled_clusters):
+        return len(labelled_clusters.groupby(["cluster", "category"]).count()) / len(pd.unique(labelled_clusters.cluster))
 
     def concat_clusters_with_abstracts_information(self, clusters, abstracts, columns):
         return pd.concat([clusters, abstracts[columns]], axis=1)
