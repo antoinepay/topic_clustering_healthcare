@@ -15,6 +15,8 @@ class Bert(Embedder):
             'n_cols': 768
         }
 
+        self.model = BertEmbedding(model='bert_12_768_12', dataset_name='book_corpus_wiki_en_uncased')
+
     # Core functions
 
     def embed_text(self, abstracts):
@@ -23,9 +25,7 @@ class Bert(Embedder):
         :param output_format: dict specifying output format of the embedding method
         :return: embedding and associated format
         """
-
-        bert = BertEmbedding(model='bert_12_768_12', dataset_name='book_corpus_wiki_en_uncased')
-        bert_embedding = bert(abstracts.tolist(), oov_way='sum')
+        bert_embedding = self.model.bert(abstracts.tolist(), oov_way='sum')
 
         embedding = []
 

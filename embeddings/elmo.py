@@ -22,16 +22,15 @@ class ELMo(Embedder):
 
         self.trained_model = "https://tfhub.dev/google/elmo/2"
 
+        self.model = hub.Module(self.trained_model, trainable=True)
+
     def embed_text(self, abstracts):
         """
         :param abstracts: pandas Series of abstracts
         :param output_format: dict specifying output format of the embedding method
         :return: embedding and associated format
         """
-
-        elmo = hub.Module(self.trained_model, trainable=True)
-
-        embeddings = elmo(abstracts.tolist(), signature="default", as_dict=True)["elmo"]
+        embeddings = self.model(abstracts.tolist(), signature="default", as_dict=True)["elmo"]
 
         with tf.compat.v1.Session() as sess:
             sess.run(tf.compat.v1.global_variables_initializer())

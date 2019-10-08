@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 from gensim.models.keyedvectors import KeyedVectors
-from .embedder import Embedder
+from embeddings.embedder import Embedder
 
 
 class BioWordVec(Embedder):
@@ -17,34 +17,36 @@ class BioWordVec(Embedder):
 
         self.trained_model = 'bin/bio_embedding_extrinsic'
 
+        self.model = KeyedVectors.load_word2vec_format(self.trained_model, binary=True)
+
     # Core functions
 
-    def get_vect(self, word, model):
+    def get_vect(self, word):
         """
         :param word: word to be embedded
         :param model: model used to embed a word
         :return: word vector
         """
         try:
-            return model.get_vector(word)
+            return self.model.get_vector(word)
         except KeyError:
-            return np.zeros((model.vector_size,))
+            return np.zeros((self.model.vector_size,))
 
-    def sum_vectors(self, sentence, model):
+    def sum_vectors(self, sentence):
         """
         :param sentence: sentence to be embedded
         :param model: model used to embed a word
         :return: vector
         """
-        return sum(self.get_vect(w, model) for w in sentence)
+        return sum(self.get_vect(w) for w in sentence)
 
-    def word2vec_features(self, sentences, model):
+    def word2vec_features(self, sentences):
         """
         :param sentences: sentences to be embedded
         :param model: model used to embed a word
         :return: numpy list of list
         """
-        feats = np.vstack([self.sum_vectors(p, model) for p in sentences])
+        feats = np.vstack([self.sum_vectors(p) for p in sentences])
         return feats
 
     def embed_text(self, abstracts):
@@ -54,8 +56,6 @@ class BioWordVec(Embedder):
         :return: embedding and associated format
         """
 
-        word_vectors = KeyedVectors.load_word2vec_format(self.trained_model, binary=True)
-
-        embedding = pd.DataFrame(self.word2vec_features(abstracts, word_vectors))
+        embedding = pd.DataFrame(self.word2vec_features(abstracts))
 
         return embedding, self.output_format
