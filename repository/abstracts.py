@@ -1,6 +1,3 @@
-# Libraries
-import os
-
 import pandas as pd
 import numpy as np
 import gensim
@@ -40,7 +37,6 @@ def search(query):
     return results
 
 
-# %%
 def fetch_details(id_list):
     """ Fetch details of a list of articles IDs.
     The reason for declaring YOUR_EMAIL address is to allow the NCBI to
@@ -55,7 +51,6 @@ def fetch_details(id_list):
     return results
 
 
-# %%
 def collect_data(categories):
     """ Get abstracts for each category in 'categories'.
 
@@ -100,18 +95,13 @@ def collect_data(categories):
     return abstracts
 
 
-def load_data(abstracts_path, with_preprocess=True):
-    """
+# here are defined categories for which we want articles
+categories = ['cancérologie', 'cardiologie', 'gastro',
+              'diabétologie', 'nutrition', 'infectiologie',
+              'gyneco-repro-urologie', 'pneumologie', 'dermatologie',
+              'industrie de santé', 'ophtalmologie']
 
-    :param abstracts_path: Path to preprocessed or not abstracts dataset
-    :param with_preprocess: Boolean to specify if we should apply preprocess pipeline
-    :return: abstracts dataset preprocessed
-    """
-    abstracts = pd.read_excel(abstracts_path, index=False)
+# call the function collect_data to get the abstracts
+abstracts = collect_data(categories)
 
-    if with_preprocess:
-        from .preprocessing import launch_preprocessing
-
-        abstracts = launch_preprocessing(abstracts)
-
-    return abstracts
+abstracts.to_csv('data/CS2_Article_Clustering.xlsx', index=None)

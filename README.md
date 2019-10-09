@@ -1,8 +1,24 @@
-# topic_clustering_healthcare
-
-Steps to get the data: 
-Run the notebook "Notebook_use_case_2_data.ipynb" (Google Colab, Jupyter Notebook...)
+# DocAI - Medical documents tagging
 
 
-## What happens next:
-Perform the preprocessing located at data_cleaning.py
+## Data collection
+
+Run (it will take few minutes to fetch all the abstracts from PubMed)
+```{bash}
+python repository/abstracts.py
+```
+
+## Modeling and output
+
+Once you fetched abstracts, run the main script
+
+```{bash}
+python main.py
+```
+
+It will output a file at the root folder named `abstracts_labelled.csv` with labels for each document.
+
+
+
+
+

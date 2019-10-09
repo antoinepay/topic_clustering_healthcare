@@ -2,30 +2,27 @@
 import pandas as pd
 
 from embeddings import Bert, BioWordVec, ELMo, GoogleSentence, Word2Vec
-
 from repository.preprocessing import launch_preprocessing
-
 from modeling import KMeansModel, DBSCANModel, AffinityPropagationModel, BirchModel, OPTICSModel, ClusterLabelsCombiner
 
 # Constants
 
 random_state = 42
 
+# Do not forget to fetch data from data_collection notebook
+
 abstracts_path = 'data/CS2_Article_Clustering.xlsx'
 
 # Core functions
 
 
-def embed_abstract(abstracts, embedding_type):
+def embed_abstracts(abstracts, embedding_type):
 
     model = None
 
     if embedding_type == "word2vec":
         model = Word2Vec()
         vectors, output_format = model.embed_text(abstracts.nouns_lemmatized_text)
-
-    elif embedding_type == "word2vec_tfidf":
-        vectors, output_format = Word2VecTFIDF().embed_text(abstracts.nouns_lemmatized_text)
 
     elif embedding_type == "biowordvec":
         model = BioWordVec()
@@ -52,15 +49,14 @@ def embed_abstract(abstracts, embedding_type):
 abstracts = pd.read_excel(abstracts_path)
 abstracts = launch_preprocessing(abstracts)
 
-vectors_biowordvec, output_format_biowordvec, model_biowordvec = embed_abstract(abstracts, "biowordvec")
+vectors_biowordvec, output_format_biowordvec, model_biowordvec = embed_abstracts(abstracts, "biowordvec")
+
+vectors_bert, output_format_bert, model_bert = embed_abstracts(abstracts, "bert")
 
 # vectors_gs, output_format_gs, model_gs = embed_abstract(abstracts, "google_sentence")
 
-# vectors_bert, output_format_bert, model_bert = embed_abstract(abstracts, "bert")
-
 
 # Modeling
-
 
 # KMeans
 
@@ -86,53 +82,57 @@ model_kmeans.nb_categories_in_clusters(labelled_clusters=labelled_clusters)
 eps = 0.1
 min_samples = 5
 
-model = DBSCANModel(eps=eps, min_samples=min_samples, metric="cosine")
+model_dbscan = DBSCANModel(eps=eps, min_samples=min_samples, metric="cosine")
 
-clusters = model.perform_clustering(features=vectors_biowordvec)
-model.plot_from_pca(clusters=clusters)
+clusters = model_dbscan.perform_clustering(features=vectors_biowordvec)
+model_dbscan.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
+labelled_clusters = model_dbscan.label_clusters(clusters=clusters, abstracts=abstracts)
+
 
 # OPTICS
+
 min_samples = 20
 
-model = OPTICSModel(min_samples = min_samples,  metric="cosine")
+model_optics = OPTICSModel(min_samples=min_samples,  metric="cosine")
 
-clusters = model.perform_clustering(features=vectors_biowordvec)
-model.plot_from_pca(clusters=clusters)
+clusters = model_optics.perform_clustering(features=vectors_biowordvec)
+model_optics.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
+labelled_clusters = model_optics.label_clusters(clusters=clusters, abstracts=abstracts)
+
 
 # Affinity Propagation
 
 model_affinity = AffinityPropagationModel()
 
 clusters = model_affinity.perform_clustering(features=vectors_biowordvec)
-model.plot_from_pca(clusters=clusters)
+model_affinity.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
+labelled_clusters = model_affinity.label_clusters(clusters=clusters, abstracts=abstracts)
 
 
 # Birch
 
-model = BirchModel(n_clusters=n_clusters)
+model_birch = BirchModel(n_clusters=n_clusters)
 
-clusters = model.perform_clustering(features=vectors_biowordvec)
-model.plot_from_pca(clusters=clusters)
+clusters = model_birch.perform_clustering(features=vectors_biowordvec)
+model_birch.plot_from_pca(clusters=clusters)
 
-labelled_clusters = model.label_clusters(clusters=clusters, abstracts=abstracts)
+labelled_clusters = model_birch.label_clusters(clusters=clusters, abstracts=abstracts)
 
 
 # Clusters Combiner
 
-abstracts = pd.read_csv('data/abstracts_preproc.csv',
+"""
+Use it if you chose to export the preprocessed abstracts in order not to compute preprocessing every time
+
+abstracts = pd.read_csv('data/abstracts_preprocessed.csv',
                         converters={
                             "nouns_lemmatized_title": lambda x: x.strip("[]").replace("'", "").split(", "),
                             "nouns_lemmatized_text": lambda x: x.strip("[]").replace("'", "").split(", ")
                         })
-
-vectors_biowordvec = pd.read_csv('data/biowordvec_embedding.csv')
-vectors_bert = pd.read_csv('data/bert_embedding.csv')
+"""
 
 clc = ClusterLabelsCombiner([
     (KMeansModel(n_clusters=100), vectors_biowordvec),
@@ -147,3 +147,5 @@ labels = clc.combine(abstracts=abstracts, number_of_tags_to_keep=5)
 rmse = clc.evaluate(embedder=model_biowordvec, abstracts=abstracts)
 
 final = pd.concat([labels.labels, abstracts], axis=1)
+
+final.to_csv('abstracts_labelled.csv', index=None)
